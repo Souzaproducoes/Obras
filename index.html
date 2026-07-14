@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPFM Implementos & Serviços — Gestão de Obras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--cpfm:#047245;--cpfm-dark:#035a38;--cpfm-light:#059058;--cpfm-pale:#E6F5ED;--cpfm-accent:#5AB88A;--white:#FFF;--g50:#FAFAFA;--g100:#F5F5F5;--g200:#EEE;--g300:#E0E0E0;--g400:#BDBDBD;--g500:#9E9E9E;--g600:#757575;--g700:#616161;--g800:#424242;--g900:#212121;--ok:#047245;--ok-lt:#E6F5ED;--warn:#E65100;--warn-lt:#FFF3E0;--err:#C62828;--err-lt:#FFEBEE;--info:#1565C0;--info-lt:#E3F2FD;--r:8px;--rs:6px}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{font-size:16px}
+        body{font-family:'Inter',sans-serif;background:var(--g100);color:var(--g800);line-height:1.5}
+        button{font-family:inherit;cursor:pointer;border:none;background:none}
+        table{border-collapse:collapse;width:100%}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:0.01ms!important}}
+        .skip-link{position:absolute;top:-100%;left:16px;background:var(--cpfm);color:#fff;padding:12px 24px;border-radius:var(--rs);z-index:999;font-weight:600}
+        .skip-link:focus{top:16px}
+        .app{display:flex;min-height:100vh}
+        .sidebar{width:260px;background:var(--cpfm-dark);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .2s}
+        .sidebar-header{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.15);display:flex;align-items:center;gap:12px}
+        .sidebar-header img{height:40px;width:auto}
+        .logo-text{display:flex;flex-direction:column}
+        .logo-name{font-size:16px;font-weight:700}
+        .logo-sub{font-size:11px;color:var(--cpfm-accent);text-transform:uppercase;letter-spacing:.08em}
+        .sidebar-nav{flex:1;padding:8px 0;overflow-y:auto}
+        .nav-section{padding:10px 20px 4px;font-size:11px;font-weight:700;color:var(--cpfm-accent);text-transform:uppercase;letter-spacing:.1em}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:rgba(255,255,255,.8);cursor:pointer;border-left:3px solid transparent;border-radius:0}
+        .nav-item:hover{background:rgba(255,255,255,.1);color:#fff}
+        .nav-item.active{background:rgba(255,255,255,.15);color:#fff;border-left-color:#fff;font-weight:600}
+        .nav-item:focus-visible{outline:2px solid var(--cpfm-accent);outline-offset:-2px}
+        .nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.7}
+        .nav-item.active svg{opacity:1}
+        .nav-badge{margin-left:auto;background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px}
+        .main{flex:1;margin-left:260px;min-height:100vh}
+        .topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--g200);padding:12px 24px;display:flex;align-items:center;gap:16px}
+        .menu-toggle{display:none;width:44px;height:44px;align-items:center;justify-content:center;border-radius:var(--rs)}
+        .menu-toggle:hover{background:var(--g100)}
+        .topbar-title{font-size:17px;font-weight:700;color:var(--g900)}
+        .topbar-sub{font-size:12px;color:var(--g600);margin-left:6px}
+        .topbar-actions{margin-left:auto;display:flex;gap:8px}
+        .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:13px;font-weight:500;border-radius:var(--rs);transition:all .2s}
+        .btn-sm{padding:6px 12px;font-size:12px}
+        .btn-primary{background:var(--cpfm);color:#fff}
+        .btn-primary:hover{background:var(--cpfm-dark)}
+        .btn-secondary{border:1.5px solid var(--cpfm);color:var(--cpfm);background:#fff}
+        .btn-danger{background:var(--err);color:#fff}
+        .btn:focus-visible{outline:2px solid var(--cpfm);outline-offset:2px}
+        .notification-btn{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--rs)}
+        .notification-btn:hover{background:var(--g100)}
+        .notification-dot{position:absolute;top:8px;right:8px;width:7px;height:7px;background:var(--err);border-radius:50%;border:2px solid #fff}
+        .content{padding:20px;max-width:1400px}
+        .page-section{display:none}.page-section.active{display:block}
+        .status-banner{display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:var(--r);margin-bottom:20px;font-size:13px;font-weight:500}
+        .status-banner.ok{background:var(--ok-lt);color:var(--cpfm-dark);border:1px solid var(--cpfm-accent)}
+        .status-banner.warning{background:var(--warn-lt);color:var(--warn);border:1px solid #FFCC80}
+        .status-banner svg{width:18px;height:18px;flex-shrink:0}
+        .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+        .kpi-card{background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:16px;border-top:3px solid var(--cpfm)}
+        .kpi-card.warn{border-top-color:var(--warn)}
+        .kpi-card.error{border-top-color:var(--err)}
+        .kpi-card.info{border-top-color:var(--info)}
+        .kpi-label{font-size:12px;font-weight:600;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+        .kpi-value{font-size:26px;font-weight:700;color:var(--cpfm-dark);line-height:1.1}
+        .kpi-value.warn{color:var(--warn)}.kpi-value.error{color:var(--err)}.kpi-value.info{color:var(--info)}.kpi-value.success{color:var(--cpfm)}
+        .kpi-sub{font-size:12px;color:var(--g600);margin-top:4px}
+        .kpi-bar{height:5px;background:var(--g200);border-radius:3px;margin-top:10px;overflow:hidden}
+        .kpi-bar-fill{height:100%;border-radius:3px}
+        .g2{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:20px}
+        .g1{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+        .card{background:#fff;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden}
+        .card-header{padding:14px 18px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between}
+        .card-title{font-size:13px;font-weight:700;color:var(--g800)}
+        .card-filter{font-size:12px;color:var(--cpfm);font-weight:600}
+        .card-body{padding:16px}
+        .data-table{width:100%;font-size:12px}
+        .data-table th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:.05em;background:var(--cpfm)}
+        .data-table td{padding:10px 14px;border-bottom:1px solid var(--g100)}
+        .data-table tbody tr:nth-child(even){background:var(--g50)}
+        .data-table tbody tr:hover{background:var(--cpfm-pale)}
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600}
+        .badge.ok{background:var(--ok-lt);color:var(--cpfm-dark)}.badge.warn{background:var(--warn-lt);color:var(--warn)}.badge.error{background:var(--err-lt);color:var(--err)}.badge.info{background:var(--info-lt);color:var(--info)}
+        .badge-dot{width:5px;height:5px;border-radius:50%}
+        .badge.ok .badge-dot{background:var(--cpfm)}.badge.warn .badge-dot{background:var(--warn)}.badge.error .badge-dot{background:var(--err)}
+        .gantt{overflow-x:auto}
+        .gantt-hdr{display:grid;grid-template-columns:130px repeat(12,1fr);font-size:11px;font-weight:700;color:var(--g600);text-transform:uppercase;padding:6px 0;border-bottom:2px solid var(--g200)}
+        .gantt-m{text-align:center}
+        .gantt-row{display:grid;grid-template-columns:130px repeat(12,1fr);padding:8px 0;border-bottom:1px solid var(--g100);align-items:center}
+        .gantt-row:hover{background:var(--cpfm-pale)}
+        .gantt-t{font-size:11px;font-weight:600;color:var(--g700);white-space:nowrap}
+        .gantt-c{position:relative;height:18px}
+        .gantt-b{position:absolute;top:3px;height:12px;border-radius:3px}
+        .gantt-b.done{background:var(--cpfm)}.gantt-b.plan{background:var(--g300)}.gantt-b.run{background:var(--info)}
+        .gantt-legend{display:flex;gap:10px;padding:10px 0 0;font-size:11px;color:var(--g600);flex-wrap:wrap}
+        .gantt-legend span{display:flex;align-items:center;gap:4px}
+        .gantt-legend .d{width:8px;height:8px;border-radius:2px}
+        .cost-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--g100)}
+        .cost-lbl{width:120px;font-size:11px;font-weight:600;color:var(--g700);flex-shrink:0}
+        .cost-bar{flex:1;height:20px;background:var(--g100);border-radius:4px;overflow:hidden}
+        .cost-fill{height:100%;border-radius:4px}
+        .cost-vals{width:160px;font-size:11px;color:var(--g600);text-align:right;flex-shrink:0}
+        .ck{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--g100);font-size:12px}
+        .ck:last-child{border-bottom:none}
+        .ck-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700}
+        .ck-icon.p{background:var(--g200);color:var(--g600)}.ck-icon.d{background:var(--cpfm-pale);color:var(--cpfm)}.ck-icon.error{background:var(--err-lt);color:var(--err)}.ck-icon.warn{background:var(--warn-lt);color:var(--warn)}
+        .risk-card{background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px;margin-bottom:10px;border-left:4px solid var(--cpfm)}
+        .risk-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px}
+        .risk-t{font-size:13px;font-weight:600;color:var(--g800)}
+        .risk-badges{display:flex;gap:4px}
+        .risk-badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+        .risk-badge.alta{background:var(--err-lt);color:var(--err)}.risk-badge.media{background:var(--warn-lt);color:var(--warn)}.risk-badge.baixa{background:var(--cpfm-pale);color:var(--cpfm-dark)}
+        .risk-mit{font-size:12px;color:var(--g600)}.risk-mit strong{color:var(--g700)}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:#fff;border-radius:var(--r);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+        .modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g200)}
+        .modal-header h3{font-size:15px;font-weight:700;color:var(--g900)}
+        .modal-close{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--rs);font-size:20px;color:var(--g500)}
+        .modal-close:hover{background:var(--g100)}
+        .modal-body{padding:20px}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .form-group{margin-bottom:14px}
+        .form-group label{display:block;font-size:12px;font-weight:600;color:var(--g700);margin-bottom:4px}
+        .form-group .req{color:var(--err)}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1.5px solid var(--g300);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--g800);background:#fff}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:2px solid var(--cpfm);outline-offset:2px;border-color:var(--cpfm)}
+        .form-group textarea{resize:vertical}
+        .form-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:10px;border-top:1px solid var(--g100)}
+        .toast{position:fixed;bottom:24px;right:24px;background:var(--cpfm-dark);color:#fff;padding:14px 20px;border-radius:var(--r);font-size:13px;font-weight:500;z-index:300;transform:translateY(100px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:10px;will-change:transform,opacity}
+        .toast.show{transform:translateY(0);opacity:1}
+        .toast-close{cursor:pointer;font-size:16px;opacity:.7;background:none;border:none;color:inherit;padding:0}
+        .toast-close:hover{opacity:1}
+        .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:250;align-items:center;justify-content:center;padding:20px}
+        .confirm-overlay.active{display:flex}
+        .confirm-box{background:#fff;border-radius:var(--r);padding:24px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+        .confirm-box h4{font-size:15px;font-weight:700;color:var(--g900);margin-bottom:8px}
+        .confirm-box p{font-size:13px;color:var(--g600);margin-bottom:20px}
+        .confirm-actions{display:flex;gap:10px;justify-content:center}
+        .actions{white-space:nowrap;text-align:center}
+        .btn-action{width:44px;height:44px;border-radius:var(--rs);display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;cursor:pointer;border:none;background:none}
+        .btn-action:hover{background:var(--g100)}
+        .btn-action:focus-visible{outline:2px solid var(--cpfm);outline-offset:2px}
+        .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90}
+        .sidebar-overlay.active{display:block}
+        @media(max-width:1024px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.g2,.g1{grid-template-columns:1fr}}
+        @media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.menu-toggle{display:flex}.topbar{padding:10px 16px}.content{padding:14px}.kpi-grid{grid-template-columns:1fr 1fr;gap:10px}.kpi-card{padding:12px}.kpi-value{font-size:20px}.btn-label{display:none}.gantt-hdr,.gantt-row{grid-template-columns:100px repeat(12,1fr)}}
+        @media(max-width:480px){.kpi-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+
+        /* CPFM AI STYLES */
+        .ai-fab{position:fixed;bottom:24px;right:24px;width:56px;height:56px;background:linear-gradient(135deg,var(--cpfm),var(--cpfm-dark));color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(4,114,69,0.4);transition:all .3s;border:none}
+        .ai-fab:hover{transform:scale(1.1);box-shadow:0 6px 30px rgba(4,114,69,0.5)}
+        .ai-fab:focus-visible{outline:3px solid var(--cpfm-accent);outline-offset:3px}
+        .ai-fab svg{width:28px;height:28px}
+        .ai-fab-badge{position:absolute;top:-4px;right:-4px;background:var(--info);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;border:2px solid #fff}
+        .ai-chat-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:160}
+        .ai-chat-overlay.active{display:block}
+        .ai-chat{display:none;position:fixed;bottom:90px;right:24px;width:380px;max-height:520px;background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.2);z-index:170;flex-direction:column;overflow:hidden}
+        .ai-chat.active{display:flex}
+        .ai-chat-header{padding:14px 16px;background:var(--cpfm-dark);color:#fff;display:flex;align-items:center;justify-content:space-between}
+        .ai-chat-header .modal-close{color:#fff;width:32px;height:32px}
+        .ai-chat-header .modal-close:hover{background:rgba(255,255,255,0.1)}
+        .ai-chat-title{display:flex;align-items:center;gap:10px}
+        .ai-avatar{width:32px;height:32px;background:var(--cpfm-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+        .ai-chat-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;max-height:320px;background:var(--g50)}
+        .ai-msg{display:flex;gap:8px;max-width:95%}
+        .ai-msg-bot{align-self:flex-start}
+        .ai-msg-user{align-self:flex-end;flex-direction:row-reverse}
+        .ai-msg-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+        .ai-msg-bot .ai-msg-avatar{background:var(--cpfm);color:#fff}
+        .ai-msg-user .ai-msg-avatar{background:var(--info);color:#fff}
+        .ai-msg-content{background:#fff;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+        .ai-msg-bot .ai-msg-content{border-top-left-radius:4px}
+        .ai-msg-user .ai-msg-content{border-top-right-radius:4px;background:var(--cpfm);color:#fff}
+        .ai-msg-content ul{margin:6px 0;padding-left:16px}
+        .ai-msg-content li{margin:2px 0;font-size:12px}
+        .ai-msg-content p{margin:4px 0}
+        .ai-msg-content strong{color:var(--cpfm-dark)}
+        .ai-quick-actions{padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--g100)}
+        .ai-quick-btn{padding:5px 10px;font-size:11px;border:1px solid var(--g200);border-radius:16px;background:#fff;color:var(--g700);cursor:pointer;transition:all .2s;white-space:nowrap}
+        .ai-quick-btn:hover{background:var(--cpfm-pale);border-color:var(--cpfm);color:var(--cpfm)}
+        .ai-chat-input{padding:12px;display:flex;gap:8px;border-top:1px solid var(--g100)}
+        .ai-chat-input input{flex:1;padding:10px 14px;border:1.5px solid var(--g300);border-radius:24px;font-size:13px;font-family:inherit;outline:none}
+        .ai-chat-input input:focus{border-color:var(--cpfm)}
+        .ai-send-btn{width:40px;height:40px;border-radius:50%;background:var(--cpfm);color:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:background .2s}
+        .ai-send-btn:hover{background:var(--cpfm-dark)}
+        .ai-send-btn svg{width:18px;height:18px}
+        .ai-typing{display:flex;gap:4px;padding:8px 12px}
+        .ai-typing span{width:6px;height:6px;background:var(--g400);border-radius:50%;animation:ai-typing 1.4s infinite}
+        .ai-typing span:nth-child(2){animation-delay:0.2s}
+        .ai-typing span:nth-child(3){animation-delay:0.4s}
+        @keyframes ai-typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+        @media(max-width:480px){.ai-chat{right:8px;left:8px;width:auto;bottom:80px}}
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    <div class="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="LogoCpfm.png" alt="CPFM Implementos e Serviços">
+                <div class="logo-text"><span class="logo-name">CPFM</span><span class="logo-sub">Implementos & Serviços</span><div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px">Rua: M, Qd 15, Lt 02<br>Setor Campina Verde<br>Santa Tereza de Goiás - GO<br>(62) 99346-5081</div></div>
+            </div>
+            <nav class="sidebar-nav" role="navigation" aria-label="Menu principal">
+                <div class="nav-section">Principal</div>
+                <div class="nav-item active" data-page="visao-geral" role="button" tabindex="0" aria-current="page"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Visão Geral</div>
+                <div class="nav-item" data-page="diario" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Diário de Obra</div>
+                <div class="nav-section">Financeiro</div>
+                <div class="nav-item" data-page="orcamento" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Orçamento</div>
+                <div class="nav-item" data-page="fluxo" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 16l4-5 4 3 5-7"/></svg>Fluxo de Caixa</div>
+                <div class="nav-section">Operação</div>
+                <div class="nav-item" data-page="cronograma" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Cronograma</div>
+                <div class="nav-item" data-page="materiais" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Materiais</div>
+                <div class="nav-item" data-page="equipe" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Equipe</div>
+                <div class="nav-section">Segurança</div>
+                <div class="nav-item" data-page="sst" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança (SST)<span class="nav-badge">!</span></div>
+                <div class="nav-item" data-page="treinamentos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Treinamentos</div>
+                <div class="nav-section">Controle</div>
+                <div class="nav-item" data-page="riscos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Riscos</div>
+                <div class="nav-item" data-page="laudos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Laudos e Entrega</div>
+            </nav>
+        </aside>
+        <div class="sidebar-overlay" id="overlay"></div>
+        <main class="main" id="main-content">
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+                <h1 class="topbar-title" id="pageTitle">Edifício Comercial Formoso<span class="topbar-sub">Av. Min. Alfredo Nasser, 980</span></h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-secondary" onclick="exportarDados()"><span class="btn-label">Exportar</span></button>
+                    <button class="notification-btn" onclick="showToast('Nenhuma notificação nova')" aria-label="Notificações"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><span class="notification-dot"></span></button>
+                </div>
+            </header>
+            <div class="content" id="appContent"></div>
+            <div style="text-align:center;padding:20px;border-top:1px solid var(--g200);margin-top:40px;font-size:11px;color:var(--g500)">
+                <div style="margin-bottom:8px"><strong style="color:var(--g700)">CPFM Implementos & Serviços</strong></div>
+                <div>Rua: M, Qd 15, Lt 02 — Setor Campina Verde, Santa Tereza de Goiás - GO</div>
+                <div>Telefone: (62) 99346-5081</div>
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g200)">
+                    <a href="https://wa.me/5562991444852" target="_blank" style="color:var(--cpfm);font-weight:600;text-decoration:none">Desenvolvido por Souza Produções</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div class="modal-overlay" id="modalDiario" role="dialog" aria-modal="true" aria-labelledby="mdlDiario"><div class="modal"><div class="modal-header"><h3 id="mdlDiario">Novo Registro Diário</h3><button class="modal-close" onclick="fecharModal('modalDiario')" aria-label="Fechar">&times;</button></div><div class="modal-body"><form id="formDiario" onsubmit="return salvarRegistro(event)"><div class="form-row"><div class="form-group"><label for="fData">Data <span class="req">*</span></label><input type="date" id="fData" required></div><div class="form-group"><label for="fEquipe">Funcionários <span class="req">*</span></label><input type="number" id="fEquipe" min="1" max="100" required placeholder="38"></div></div><div class="form-group"><label for="fAtividades">Atividades <span class="req">*</span></label><textarea id="fAtividades" rows="3" required placeholder="Descreva as atividades..."></textarea></div><div class="form-group"><label for="fObs">Observações</label><textarea id="fObs" rows="2" placeholder="Ocorrências..."></textarea></div><div class="form-actions"><button type="button" class="btn btn-secondary" onclick="fecharModal('modalDiario')">Cancelar</button><button type="submit" class="btn btn-primary">Salvar</button></div></form></div></div></div>
+    <div class="modal-overlay" id="modalMaterial" role="dialog" aria-modal="true" aria-labelledby="mdlMat"><div class="modal"><div class="modal-header"><h3 id="mdlMat">Novo Pedido / Movimentação</h3><button class="modal-close" onclick="fecharModal('modalMaterial')" aria-label="Fechar">&times;</button></div><div class="modal-body"><form id="formMaterial" onsubmit="return salvarMaterial(event)"><div class="form-group"><label for="fMatTipo">Tipo <span class="req">*</span></label><select id="fMatTipo" required><option value="pedido">Pedido (Compra)</option><option value="entrada">Entrada (Recebido)</option><option value="saida">Saída (Obra)</option></select></div><div class="form-row"><div class="form-group"><label for="fMatNome">Material <span class="req">*</span></label><input type="text" id="fMatNome" required placeholder="Ex: Concreto C-25, Porta de vidro..." list="listaMateriais"><datalist id="listaMateriais"><option>Concreto C-20"><option>Concreto C-25"><option>Vergalhão CA-60 ø5,0"><option>Vergalhão CA-50 ø10,0"><option>Areia média"><option>Brita nº 1"><option>Cimento CP-II"><option>Tijolo cerâmico 6 furos"><option>Blocos EPS B10/40/40"><option>Forma compensada 15mm"><option>ACM fachada"><option>Vidro temperado 10mm"><option>Porta de vidro"><option>Porta de madeira"><option>Piso cerâmico"><option>Forro de gesso"><option>Ar condicionado split"><option>Telha trapezoidal"><option>Calha"><option>EPIs"><option>Ferramentas"><option>Serviço de soldagem"><option>Serviço de pintura"></datalist></div><div class="form-group"><label for="fMatQtd">Quantidade <span class="req">*</span></label><input type="number" id="fMatQtd" step="0.1" min="0.1" required placeholder="15"></div></div><div class="form-row"><div class="form-group"><label for="fMatUnidade">Unidade</label><select id="fMatUnidade"><option>m³</option><option>ton</option><option>sc (50kg)</option><option>mil</option><option>un</option><option>m²</option><option>m</option><option>lote</option><option>dia</option></select></div><div class="form-group"><label for="fMatFornecedor">Fornecedor</label><input type="text" id="fMatFornecedor" placeholder="Nome do fornecedor" autocomplete="off"></div></div><div class="form-row"><div class="form-group"><label for="fMatNF">Nota Fiscal</label><input type="text" id="fMatNF" placeholder="Nº da NF" autocomplete="off"></div><div class="form-group"><label for="fMatValor">Valor (R$)</label><input type="number" id="fMatValor" step="0.01" min="0" placeholder="0,00"></div></div><div class="form-group"><label for="fMatNota">Observações</label><textarea id="fMatNota" rows="2" placeholder="Ex: Entrega urgente, especificação técnica..."></textarea></div><div class="form-actions"><button type="button" class="btn btn-secondary" onclick="fecharModal('modalMaterial')">Cancelar</button><button type="submit" class="btn btn-primary">Registrar</button></div></form></div></div></div>
+    <div class="confirm-overlay" id="confirmDelete" role="alertdialog" aria-modal="true"><div class="confirm-box"><h4>Confirmar Exclusão</h4><p id="confirmMsg">Tem certeza?</p><div class="confirm-actions"><button class="btn btn-secondary" onclick="fecharConfirm()">Cancelar</button><button class="btn btn-danger" id="confirmBtn" onclick="confirmarDelete()">Excluir</button></div></div></div>
+    <div class="modal-overlay" id="modalExport" role="dialog" aria-modal="true" aria-labelledby="mdlExport"><div class="modal" style="max-width:400px"><div class="modal-header"><h3 id="mdlExport">Exportar Dados</h3><button class="modal-close" onclick="fecharExport()" aria-label="Fechar">&times;</button></div><div class="modal-body" style="text-align:center;padding:24px"><p style="margin-bottom:20px;color:var(--g600);font-size:14px">Escolha o formato de exportação:</p><div style="display:flex;flex-direction:column;gap:12px"><button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="fecharExport();exportarJSON()"><span>1</span> JSON — Dados estruturados</button><button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px;background:var(--info)" onclick="fecharExport();exportarPDF()"><span>2</span> PDF — Relatório formatado</button><button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px;background:var(--cpfm)" onclick="fecharExport();exportarCSV()"><span>3</span> CSV — Planilha Excel</button></div></div></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button class="toast-close" onclick="fecharToast()" aria-label="Fechar">&times;</button></div>
+    <!-- CPFM AI - ASSISTENTE INTELIGENTE -->
+    <div class="ai-fab" id="aiFab" onclick="abrirChatIA()" title="CPFM AI — Assistente de Obras" aria-label="Abrir assistente IA">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 017 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 017-7z"/><line x1="10" y1="22" x2="14" y2="22"/></svg>
+        <span class="ai-fab-badge">AI</span>
+    </div>
+    <div class="ai-chat-overlay" id="aiChatOverlay" onclick="fecharChatIA()"></div>
+    <div class="ai-chat" id="aiChat">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title"><div class="ai-avatar">AI</div><div><strong>CPFM AI</strong><div style="font-size:10px;color:var(--cpfm-accent);font-weight:400"><a href="https://wa.me/5562991444852" target="_blank" style="color:var(--cpfm-accent);text-decoration:none">Souza Produções</a></div></div></div>
+            <button class="modal-close" onclick="fecharChatIA()" aria-label="Fechar chat">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatBody">
+            <div class="ai-msg ai-msg-bot">
+                <div class="ai-msg-avatar">AI</div>
+                <div class="ai-msg-content">
+                    <p>Olá! Sou o assistente inteligente da <strong>CPFM Implementos & Serviços</strong>.</p>
+                    <p style="font-size:11px;color:var(--g500)">Rua: M, Qd 15, Lt 02 — Santa Tereza de Goiás, GO<br>(62) 99346-5081</p>
+                    <p>Posso ajudá-lo com:</p>
+                    <ul>
+                        <li>Consultas sobre o status da obra</li>
+                        <li>Análise de custos e orçamento</li>
+                        <li>Alertas de riscos e atrasos</li>
+                        <li>Sugestões de otimização</li>
+                        <li>Relatórios personalizados</li>
+                    </ul>
+                    <p style="margin-top:8px;color:var(--g500);font-size:12px">Digite sua pergunta ou clique em um dos comandos rápidos abaixo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="ai-quick-actions">
+            <button class="ai-quick-btn" onclick="perguntarIA('Qual o status geral da obra?')">📊 Status</button>
+            <button class="ai-quick-btn" onclick="perguntarIA('Quais são os riscos críticos?')">⚠️ Riscos</button>
+            <button class="ai-quick-btn" onclick="perguntarIA('Como está o orçamento?')">💰 Orçamento</button>
+            <button class="ai-quick-btn" onclick="perguntarIA('Resumo semanal')">📋 Resumo</button>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="aiInput" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='EnviarIA()')" aria-label="Pergunta para a IA">
+            <button class="ai-send-btn" onclick="enviarIA()" aria-label="Enviar mensagem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script>
+    function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+    function fmtData(s){var p=s.split('-');return p[2]+'/'+p[1]}
+    function toggleLaudos(cb){
+        var tr=cb.closest('tr');
+        if(cb.checked){
+            tr.style.background='var(--ok-lt)';
+            var td=tr.querySelector('.data-conclusao');
+            td.textContent=new Date().toLocaleDateString('pt-BR');
+            td.style.color='var(--cpfm)';td.style.fontWeight='600';
+            showToast('Item concluído!');
+        }else{
+            tr.style.background='';
+            var td2=tr.querySelector('.data-conclusao');
+            td2.textContent='—';td2.style.color='var(--g500)';td2.style.fontWeight='400';
+        }
+        atualizarContadorLaudos();
+    }
+    function atualizarContadorLaudos(){
+        var total=document.querySelectorAll('#tbodyLaudos tr').length;
+        var ok=document.querySelectorAll('#tbodyLaudos input:checked').length;
+        var el=document.getElementById('laudosCount');
+        if(el)el.textContent=ok+'/'+total+' concluídos';
+    }
+    function adicionarLaudos(){
+        var tbody=document.getElementById('tbodyLaudos');
+        if(!tbody){showToast('Erro: tabela não encontrada');return;}
+        var id=Date.now();
+        var tr=document.createElement('tr');
+        tr.setAttribute('data-id',id);
+        var td1=document.createElement('td');
+        var cb=document.createElement('input');
+        cb.type='checkbox';
+        cb.onchange=function(){toggleLaudos(this)};
+        td1.appendChild(cb);
+        tr.appendChild(td1);
+        var td2=document.createElement('td');
+        td2.innerHTML='<strong contenteditable="true" style="display:block;padding:4px;border:1px solid var(--cpfm);border-radius:4px;background:#fff" onblur="showToast(\'Item salvo!\')">Novo item - clique para editar</strong>';
+        tr.appendChild(td2);
+        var td3=document.createElement('td');
+        td3.innerHTML='<span contenteditable="true" style="display:block;padding:4px;border:1px solid var(--g300);border-radius:4px;font-size:12px;background:#fff">Descrição do item</span>';
+        tr.appendChild(td3);
+        var td4=document.createElement('td');
+        td4.className='anotacoes';
+        td4.innerHTML='<span contenteditable="true" style="display:block;padding:4px;border:1px solid var(--g300);border-radius:4px;font-size:12px;color:var(--g600);background:#fff" placeholder="Anotação..."> </span>';
+        tr.appendChild(td4);
+        var td5=document.createElement('td');
+        td5.className='data-conclusao';
+        td5.style.cssText='font-size:12px;color:var(--g500)';
+        td5.textContent='—';
+        tr.appendChild(td5);
+        var td6=document.createElement('td');
+        td6.className='actions';
+        td6.innerHTML='<button class="btn-action" title="Editar" onclick="editarLaudos(this)">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button>';
+        tr.appendChild(td6);
+        tbody.appendChild(tr);
+        atualizarContadorLaudos();
+        showToast('Novo item adicionado! Clique no nome para editar.');
+    }
+    function editarLaudos(btn){
+        var tr=btn.closest('tr');
+        var cells=tr.querySelectorAll('td');
+        var nome=prompt('Nome do item:',cells[1].textContent.trim());
+        if(nome!==null&&nome!=='')cells[1].innerHTML='<strong style="font-weight:700">'+esc(nome)+'</strong>';
+        var desc=prompt('Descrição:',cells[2].textContent.trim());
+        if(desc!==null)cells[2].innerHTML='<span style="font-size:12px">'+esc(desc)+'</span>';
+        var nota=prompt('Anotação:',cells[3].textContent.trim());
+        if(nota!==null)cells[3].innerHTML='<span style="font-size:12px;color:var(--g600)">'+esc(nota)+'</span>';
+        showToast('Item atualizado!');
+    }
+    function showToast(m){var t=document.getElementById('toast');document.getElementById('toastMsg').textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},3000)}
+    function fecharToast(){document.getElementById('toast').classList.remove('show')}
+    function fecharModal(id){document.getElementById(id).classList.remove('active')}
+    function fecharConfirm(){document.getElementById('confirmDelete').classList.remove('active');elementoAlvo=null}
+    var elementoAlvo=null;
+    function deletarItem(btn,ctx){elementoAlvo=btn.closest('tr')||btn.closest('.ck');document.getElementById('confirmMsg').textContent='Excluir este item?';document.getElementById('confirmDelete').classList.add('active')}
+    function confirmarDelete(){if(elementoAlvo){elementoAlvo.style.transition='opacity 0.3s';elementoAlvo.style.opacity='0';setTimeout(function(){elementoAlvo.remove();showToast('Excluído!')},300)}fecharConfirm()}
+
+    // PAGES
+    var pages={
+    'visao-geral':'<div class="status-banner ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span><strong>Fase 0 em andamento</strong> — Preparação e Documentação.</span></div><div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Progresso</div><div class="kpi-value">12%</div><div class="kpi-sub">Previsto: 15%</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:12%;background:var(--cpfm)"></div></div></div><div class="kpi-card warn"><div class="kpi-label">Custo Real</div><div class="kpi-value warn">R$ 48k</div><div class="kpi-sub">Orçado: R$ 70k</div><div class="kpi-bar"><div class="kpi-bar-fill" style="width:69%;background:var(--warn)"></div></div></div><div class="kpi-card"><div class="kpi-label">Equipe</div><div class="kpi-value info">38</div><div class="kpi-sub">de 48 — 79%</div></div><div class="kpi-card error"><div class="kpi-label">Críticos</div><div class="kpi-value error">5</div><div class="kpi-sub">Estoque baixo</div></div></div><div class="g2"><div class="card"><div class="card-header"><span class="card-title">Curva S</span></div><div class="card-body"><canvas id="curvaS" height="260"></canvas></div></div><div class="card"><div class="card-header"><span class="card-title">Áreas</span></div><div class="card-body"><canvas id="areasChart" height="260"></canvas></div></div></div>',
+    'diario':'<div class="card"><div class="card-header"><span class="card-title">Diário de Obra</span><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'modalDiario\').classList.add(\'active\')">+ Novo Registro</button></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Data</th><th>Equipe</th><th>Atividades</th><th>Ocorrências</th><th style="text-align:center">Ações</th></tr></thead><tbody id="tbodyDiario"><tr><td><strong>14/07</strong></td><td>38</td><td>Locação pilares P1-P12, escavação estacas</td><td><span class="badge warn"><span class="badge-dot"></span>2</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>11/07</strong></td><td>42</td><td>Locação pilares P1-P8</td><td><span class="badge ok"><span class="badge-dot"></span>0</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div>',
+    'orcamento':'<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Orçado</div><div class="kpi-value">R$ 70k</div></div><div class="kpi-card warn"><div class="kpi-label">Executado</div><div class="kpi-value warn">R$ 48k</div></div><div class="kpi-card"><div class="kpi-label">Saldo</div><div class="kpi-value success">R$ 780k</div></div><div class="kpi-card info"><div class="kpi-label">Custo/m²</div><div class="kpi-value info">R$ 65,62</div></div></div><div class="card"><div class="card-header"><span class="card-title">Orçamento por Fase</span></div><div class="card-body" style="padding:12px 16px"><div class="cost-row"><span class="cost-lbl">F0 Preparação</span><div class="cost-bar"><div class="cost-fill" style="width:69%;background:var(--cpfm)"></div></div><span class="cost-vals">R$ 56k — 85k</span></div><div class="cost-row"><span class="cost-lbl">F1 Fundações</span><div class="cost-bar"><div class="cost-fill" style="width:42%;background:var(--cpfm)"></div></div><span class="cost-vals">R$ 43k — 60k</span></div><div class="cost-row"><span class="cost-lbl">F2 Pilares</span><div class="cost-bar"><div class="cost-fill" style="width:52%;background:var(--cpfm)"></div></div><span class="cost-vals">R$ 55k — 75k</span></div><div class="cost-row"><span class="cost-lbl">F3 Vigas/Lajes</span><div class="cost-bar"><div class="cost-fill" style="width:72%;background:var(--cpfm)"></div></div><span class="cost-vals">R$ 78k — 105k</span></div><div class="cost-row"><span class="cost-lbl">F4 Estr. Metálica</span><div class="cost-bar"><div class="cost-fill" style="width:100%;background:var(--info)"></div></div><span class="cost-vals">R$ 110k — 155k</span></div><div class="cost-row"><span class="cost-lbl">F5 Instalações</span><div class="cost-bar"><div class="cost-fill" style="width:60%;background:var(--info)"></div></div><span class="cost-vals">R$ 65k — 96k</span></div><div class="cost-row"><span class="cost-lbl">F6 Acabamentos</span><div class="cost-bar"><div class="cost-fill" style="width:100%;background:var(--err)"></div></div><span class="cost-vals">R$ 135k — 195k</span></div><div class="cost-row"><span class="cost-lbl">F7 Testes</span><div class="cost-bar"><div class="cost-fill" style="width:12%;background:var(--ok)"></div></div><span class="cost-vals">R$ 13k — 20k</span></div></div></div>',
+    'fluxo':'<div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Fluxo de Caixa</span></div><div class="card-body"><canvas id="fluxoChart" height="280"></canvas></div></div>',
+    'cronograma':'<div class="card"><div class="card-header"><span class="card-title">Cronograma — 12 Meses</span></div><div class="card-body"><div class="gantt"><div class="gantt-hdr"><div>Fase</div><div class="gantt-m">M1</div><div class="gantt-m">M2</div><div class="gantt-m">M3</div><div class="gantt-m">M4</div><div class="gantt-m">M5</div><div class="gantt-m">M6</div><div class="gantt-m">M7</div><div class="gantt-m">M8</div><div class="gantt-m">M9</div><div class="gantt-m">M10</div><div class="gantt-m">M11</div><div class="gantt-m">M12</div></div><div class="gantt-row"><div class="gantt-t">F0 Preparação</div><div class="gantt-c"><div class="gantt-b run" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-row"><div class="gantt-t">F1 Fundações</div><div class="gantt-c"></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-row"><div class="gantt-t">F2 Pilares</div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-legend"><span><span class="d" style="background:var(--cpfm)"></span> Executado</span><span><span class="d" style="background:var(--g300)"></span> Planejado</span><span><span class="d" style="background:var(--info)"></span> Em andamento</span></div></div></div></div>',
+    'materiais':'<div class="kpi-grid"><div class="kpi-card error"><div class="kpi-label">Abaixo Mínimo</div><div class="kpi-value error">5</div></div><div class="kpi-card info"><div class="kpi-label">Pedidos Ativos</div><div class="kpi-value info">3</div></div><div class="kpi-card"><div class="kpi-label">Em Trânsito</div><div class="kpi-value">1</div></div><div class="kpi-card"><div class="kpi-label">Estoque Total</div><div class="kpi-value success">R$ 85k</div></div></div><div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Pedidos e Movimentações</span><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'modalMaterial\').classList.add(\'active\')">+ Novo Pedido</button></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Material</th><th>Quantidade</th><th>Fornecedor</th><th>NF</th><th>Valor</th><th>Status</th><th>Obs</th><th style="text-align:center">Ações</th></tr></thead><tbody id="tbodyMateriais"><tr><td><strong>Concreto C-20</strong></td><td>15 m³</td><td>Concreto ABC</td><td>1247</td><td>R$ 4.200</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Entrega 20/07</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Vergalhão CA-60</strong></td><td>3 ton</td><td>Aço Central</td><td>—</td><td>R$ 9.000</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Urgente</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Porta de vidro 3,92x2,65m</strong></td><td>1 un</td><td>Vidraçaria Central</td><td>—</td><td>R$ 8.000</td><td><span class="badge warn"><span class="badge-dot"></span>Aguardando</span></td><td style="font-size:11px;color:var(--g500)">Temperado 10mm</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Areia média</strong></td><td>10 m³</td><td>Areias GO</td><td>0892</td><td>R$ 1.800</td><td><span class="badge ok"><span class="badge-dot"></span>Recebido</span></td><td style="font-size:11px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Blocos EPS B10/40/40</strong></td><td>294 un</td><td>EPS Brasil</td><td>—</td><td>R$ 4.410</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Entrega 25/07</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div><div class="card"><div class="card-header"><span class="card-title">Estoque Mínimo por Material</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Material</th><th>Und</th><th>Estoque</th><th>Mínimo</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Concreto C-20</strong></td><td>m³</td><td>8</td><td>20</td><td><span class="badge error"><span class="badge-dot"></span>Crítico</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Vergalhão CA-60</strong></td><td>ton</td><td>1,2</td><td>1,5</td><td><span class="badge warn"><span class="badge-dot"></span>Baixo</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Areia média</strong></td><td>m³</td><td>18</td><td>15</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Cimento CP-II</strong></td><td>sc</td><td>45</td><td>60</td><td><span class="badge warn"><span class="badge-dot"></span>Baixo</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Tijolo 6 furos</strong></td><td>mil</td><td>2</td><td>8</td><td><span class="badge error"><span class="badge-dot"></span>Crítico</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Blocos EPS</strong></td><td>un</td><td>0</td><td>30</td><td><span class="badge error"><span class="badge-dot"></span>Zerado</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr></tbody></table></div></div>',
+    'equipe':'<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Hoje</div><div class="kpi-value">38</div><div class="kpi-sub">de 48 — 79%</div></div><div class="kpi-card warn"><div class="kpi-label">Absentismo</div><div class="kpi-value warn">21%</div></div><div class="kpi-card"><div class="kpi-label">Pedreiros</div><div class="kpi-value">12</div><div class="kpi-sub">Nec: 14</div></div><div class="kpi-card"><div class="kpi-label">Armadores</div><div class="kpi-value">8</div><div class="kpi-sub">Nec: 10</div></div></div><div class="card"><div class="card-header"><span class="card-title">Quadro de Pessoal</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Ofício</th><th>Contrat.</th><th>Presentes</th><th>Necessários</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Pedreiro</strong></td><td>14</td><td>12</td><td>14</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Armador</strong></td><td>10</td><td>8</td><td>10</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Eletricista</strong></td><td>6</td><td>4</td><td>4</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div>',
+    'sst':'<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Acidentes</div><div class="kpi-value success">0</div></div><div class="kpi-card warn"><div class="kpi-label">Quase-Acidentes</div><div class="kpi-value warn">2</div></div><div class="kpi-card"><div class="kpi-label">EPIs Entregues</div><div class="kpi-value info">38</div></div><div class="kpi-card"><div class="kpi-label">Dias s/ Acidente</div><div class="kpi-value success">45</div></div></div><div class="card"><div class="card-header"><span class="card-title">Licenças e Alvarás</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Documento</th><th>Órgão</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Alvará Funcionamento</strong></td><td>Prefeitura</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Certificado CBM-GO</strong></td><td>Bombeiros</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>ART Execução</strong></td><td>CREA-GO</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div>',
+    'treinamentos':'<div class="card"><div class="card-header"><span class="card-title">Matrix Treinamentos NR-18</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Treinamento</th><th>Norma</th><th>Treinados</th><th>Pendentes</th><th>Status</th></tr></thead><tbody><tr><td><strong>Admissão Segurança</strong></td><td>NR-18.3</td><td>28</td><td>10</td><td><span class="badge warn"><span class="badge-dot"></span>Andamento</span></td></tr><tr><td><strong>Trabalho Altura</strong></td><td>NR-35</td><td>15</td><td>23</td><td><span class="badge warn"><span class="badge-dot"></span>Agendado</span></td></tr><tr><td><strong>Eletricidade</strong></td><td>NR-10</td><td>6</td><td>0</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td></tr><tr><td><strong>Brigada Incêndio</strong></td><td>NR-23</td><td>8</td><td>0</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td></tr></tbody></table></div></div>',
+    'riscos':'<div class="status-banner warning"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong>10 riscos</strong> — 3 alta, 4 média, 3 baixa.</span></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">1. Atraso aprovações públicas</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Protocolar 30 dias antes; acompanhamento semanal.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">2. Chuvas excessivas</span><div class="risk-badges"><span class="risk-badge alta">Alta</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Cobertura temporária; acelerar na estação seca.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">3. Atraso entrega ACM/vidro</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Contrato com multa; estoque 15 dias.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">4. Falta mão de obra</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Contratação antecipada; treinamento.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">5. Variação preço aço/concreto</span><div class="risk-badges"><span class="risk-badge alta">Alta</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Reajuste trimestral INCC-M.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">6. Acidente de trabalho</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> SST rigoroso; EPI 100%; NR-18/10/35.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">7. Infiltração fachada</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Teste estanqueidade; garantia 2 anos.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">8. Erro locação pilares</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Verificação cruzada; GPS/topografia.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">9. Falha concreto</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Ensaio slump; corpos de prova.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">10. Atraso estr. metálica</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Oficina certificada; visitas.</div></div>',
+    'laudos':'<div class="status-banner warning"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span><strong id="laudosCount">0/12 concluídos</strong> — Acompanhe o progresso.</span></div><div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Checklist de Entrega</span><button class="btn btn-primary btn-sm" onclick="adicionarLaudos()">+ Novo Item</button></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th style="width:40px">✓</th><th>Item</th><th>Descrição</th><th>Anotações</th><th>Data Conclusão</th><th style="text-align:center">Ações</th></tr></thead><tbody id="tbodyLaudos"><tr data-id="1"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Projeto aprovado</strong></td><td>Prefeitura de Formoso-GO</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="2"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>ART/RRT execução</strong></td><td>Responsável Técnico</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="3"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Certificado CBM-GO</strong></td><td>Corpo de Bombeiros</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="4"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Certidão Conclusão</strong></td><td>CCO - Prefeitura</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="5"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Habite-se</strong></td><td>Prefeitura de Formoso-GO</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="6"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Garantia estrutura</strong></td><td>Mínimo 5 anos</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="7"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Garantia instalações</strong></td><td>Mínimo 1 ano</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="8"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Manual proprietário</strong></td><td>Documentação da obra</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="9"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Treinamento proprietário</strong></td><td>Capacitação</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="10"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Limpeza final</strong></td><td>Limpeza pós-obra</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="11"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Chaves e controles</strong></td><td>Entrega ao proprietário</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="12"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Documentação fotográfica</strong></td><td>Registro completo</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr></tbody></table></div></div>'
+    };
+
+    // NAV
+    var navItems=document.querySelectorAll('.nav-item[data-page]');
+    var titles={'visao-geral':'Edifício Comercial Formoso<span class="topbar-sub">Av. Min. Alfredo Nasser, 980</span>','diario':'Diário de Obra','orcamento':'Orçamento','fluxo':'Fluxo de Caixa','cronograma':'Cronograma','materiais':'Materiais','equipe':'Equipe','sst':'Segurança (SST)','treinamentos':'Treinamentos','riscos':'Riscos','laudos':'Laudos e Entrega'};
+    function navegar(page){
+        navItems.forEach(function(x){x.classList.remove('active');x.removeAttribute('aria-current')});
+        var a=document.querySelector('.nav-item[data-page="'+page+'"]');
+        if(a){a.classList.add('active');a.setAttribute('aria-current','page')}
+        document.getElementById('appContent').innerHTML='<div class="page-section active" id="page-'+page+'">'+(pages[page]||'')+'</div>';
+        document.getElementById('pageTitle').innerHTML=titles[page]||'';
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('overlay').classList.remove('active');
+        window.scrollTo(0,0);
+        setTimeout(function(){renderCharts(page)},100);
+    }
+    navItems.forEach(function(n){
+        n.addEventListener('click',function(){navegar(n.dataset.page)});
+        n.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();navegar(n.dataset.page)}});
+    });
+    document.getElementById('menuToggle').addEventListener('click',function(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('active')});
+    document.getElementById('overlay').addEventListener('click',function(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('active')});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){document.querySelectorAll('.modal-overlay.active').forEach(function(m){m.classList.remove('active')});fecharConfirm()}});
+
+    // CHARTS
+    var charts={};
+    function renderCharts(page){
+        if(page==='visao-geral'){
+            var e1=document.getElementById('curvaS');
+            if(e1){if(charts.curvaS)charts.curvaS.destroy();charts.curvaS=new Chart(e1.getContext('2d'),{type:'line',data:{labels:['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],datasets:[{label:'Previsto',data:[7.5,12.9,19.4,28,37.6,49.5,60.2,73.1,83.9,91.4,96.8,100],borderColor:'#047245',backgroundColor:'rgba(4,114,69,0.08)',fill:true,tension:0.3,pointRadius:3,borderWidth:2},{label:'Real',data:[3,8,null,null,null,null,null,null,null,null,null,null],borderColor:'#C62828',fill:false,tension:0.3,pointRadius:4,borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:11}}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#757575'}},y:{grid:{color:'#E0E0E0'},ticks:{font:{size:11},color:'#757575',callback:function(v){return v+'%'}},min:0,max:100}}}});}
+            var e2=document.getElementById('areasChart');
+            if(e2){if(charts.areas)charts.areas.destroy();charts.areas=new Chart(e2.getContext('2d'),{type:'doughnut',data:{labels:['Loja Nova 57,7%','Loja Atual 20,3%','Adm Superior 7,9%','Depósito 8,1%','Adm Térreo 6,0%'],datasets:[{data:[421.92,148.42,57.87,59.12,44.15],backgroundColor:['#047245','#1565C0','#757575','#059058','#BDBDBD'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{usePointStyle:true,pointStyle:'circle',padding:10,font:{size:11}}}}}});}
+        }
+        if(page==='fluxo'){
+            var e3=document.getElementById('fluxoChart');
+            if(e3){if(charts.fluxo)charts.fluxo.destroy();charts.fluxo=new Chart(e3.getContext('2d'),{type:'bar',data:{labels:['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],datasets:[{label:'Entradas',data:[0,0,0,0,0,0,75,80,60,50,40,25],backgroundColor:'#047245',borderRadius:3,barPercentage:0.5},{label:'Saídas',data:[48,50,60,70,80,90,100,110,90,60,40,20],backgroundColor:'#C62828',borderRadius:3,barPercentage:0.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:12,font:{size:11}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': R$ '+c.parsed.y+'k'}}}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#757575'}},y:{grid:{color:'#E0E0E0'},ticks:{font:{size:11},color:'#757575',callback:function(v){return 'R$ '+v+'k'}},beginAtZero:true}}}});}
+        }
+    }
+
+    // CRUD
+    function salvarRegistro(e){
+        e.preventDefault();
+        var data=document.getElementById('fData').value;
+        var equipe=document.getElementById('fEquipe').value;
+        var atividades=document.getElementById('fAtividades').value;
+        var tbody=document.getElementById('tbodyDiario');
+        if(!tbody)tbody=document.querySelector('#page-diario tbody');
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td><strong>'+esc(fmtData(data))+'</strong></td><td>'+esc(equipe)+'</td><td>'+esc(atividades)+'</td><td><span class="badge ok"><span class="badge-dot"></span>0</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td>';
+        if(tbody)tbody.insertBefore(tr,tbody.firstChild);
+        fecharModal('modalDiario');
+        document.getElementById('formDiario').reset();
+        document.getElementById('fData').valueAsDate=new Date();
+        showToast('Registro salvo!');
+    }
+    function exportarDados(){
+        document.getElementById('modalExport').classList.add('active');
+    }
+    function fecharExport(){document.getElementById('modalExport').classList.remove('active')}
+    function exportarJSON(){
+        var dados={obra:'Edifício Comercial - Formoso-GO',endereco:'Av. Min. Alfredo Nasser, 980',area:'731,48 m²',investimento:'R$ 682.650 - R$ 972.930',prazo:'12 meses',data:new Date().toLocaleString('pt-BR'),kpis:{progresso:'12%',custo:'R$ 48k',equipe:38,criticos:5},orcamento:[{f:'F0',d:'Preparação',min:56000,max:85000},{f:'F1',d:'Fundações',min:43000,max:60000},{f:'F2',d:'Pilares',min:55000,max:75000},{f:'F3',d:'Vigas/Lajes',min:78000,max:105000},{f:'F4',d:'Estr. Metálica',min:110000,max:155000},{f:'F5',d:'Instalações',min:65000,max:96000},{f:'F6',d:'Acabamentos',min:135000,max:195000},{f:'F7',d:'Testes',min:13000,max:20000}],riscos:[{n:'Atraso aprovações',p:'Média',i:'Alto'},{n:'Chuvas',p:'Alta',i:'Médio'},{n:'ACM/vidro',p:'Média',i:'Alto'},{n:'Mão de obra',p:'Média',i:'Médio'},{n:'Preço aço',p:'Alta',i:'Médio'},{n:'Acidente',p:'Baixa',i:'Alto'},{n:'Infiltração',p:'Média',i:'Médio'},{n:'Locação pilares',p:'Baixa',i:'Alto'},{n:'Falha concreto',p:'Baixa',i:'Alto'},{n:'Estr. metálica',p:'Média',i:'Alto'}]};
+        var blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CPFM_Obra_'+new Date().toISOString().split('T')[0]+'.json';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        showToast('JSON exportado!');
+    }
+    function exportarPDF(){
+        // Converter todos os canvas para imagens
+        var canvasImgs='';
+        document.querySelectorAll('canvas').forEach(function(c,i){
+            try{canvasImgs+='<div style="margin:10px 0"><img src="'+c.toDataURL('image/png')+'" style="max-width:100%;border:1px solid #ddd;border-radius:8px"></div>';}catch(e){}
+        });
+        var win=window.open('','','width=900,height=700');
+        win.document.write('<html><head><title>CPFM - Relatório</title><style>body{font-family:Arial,sans-serif;padding:40px;color:#333}h1{color:#047245;border-bottom:2px solid #047245;padding-bottom:10px}h2{color:#047245;margin-top:30px}.kpi-grid{display:flex;gap:20px;margin:20px 0}.kpi-card{flex:1;border:1px solid #ddd;border-radius:8px;padding:15px;border-top:3px solid #047245}.kpi-label{font-size:11px;color:#666;text-transform:uppercase}.kpi-value{font-size:24px;font-weight:700;color:#035a38}table{width:100%;border-collapse:collapse;margin:15px 0}th{background:#047245;color:#fff;padding:10px;text-align:left;font-size:12px}td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}.badge{padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}.badge.ok{background:#E6F5ED;color:#035a38}.badge.warn{background:#FFF3E0;color:#E65100}.badge.error{background:#FFEBEE;color:#C62828}.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;font-size:11px;color:#666;text-align:center}img{max-width:100%}</style></head><body>');
+        win.document.write('<h1>CPFM Implementos & Serviços</h1>');
+        win.document.write('<p><strong>Obra:</strong> Edifício Comercial - Av. Min. Alfredo Nasser, 980, Formoso-GO</p>');
+        win.document.write('<p><strong>Data:</strong> '+new Date().toLocaleString('pt-BR')+'</p>');
+        win.document.write('<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Progresso</div><div class="kpi-value">12%</div></div><div class="kpi-card"><div class="kpi-label">Custo Real</div><div class="kpi-value">R$ 48k</div></div><div class="kpi-card"><div class="kpi-label">Equipe</div><div class="kpi-value">38</div></div><div class="kpi-card"><div class="kpi-label">Críticos</div><div class="kpi-value">5</div></div></div>');
+        if(canvasImgs){win.document.write('<h2>Gráficos</h2>'+canvasImgs);}
+        win.document.write('<h2>Orçamento por Fase</h2>');
+        win.document.write('<table><thead><tr><th>Fase</th><th>Descrição</th><th>Mínimo</th><th>Máximo</th></tr></thead><tbody>');
+        win.document.write('<tr><td>F0</td><td>Preparação</td><td>R$ 56.000</td><td>R$ 85.000</td></tr>');
+        win.document.write('<tr><td>F1</td><td>Fundações</td><td>R$ 43.000</td><td>R$ 60.000</td></tr>');
+        win.document.write('<tr><td>F2</td><td>Pilares</td><td>R$ 55.000</td><td>R$ 75.000</td></tr>');
+        win.document.write('<tr><td>F3</td><td>Vigas/Lajes</td><td>R$ 78.000</td><td>R$ 105.000</td></tr>');
+        win.document.write('<tr><td>F4</td><td>Estrutura Metálica</td><td>R$ 110.000</td><td>R$ 155.000</td></tr>');
+        win.document.write('<tr><td>F5</td><td>Instalações</td><td>R$ 65.000</td><td>R$ 96.000</td></tr>');
+        win.document.write('<tr><td>F6</td><td>Acabamentos</td><td>R$ 135.000</td><td>R$ 195.000</td></tr>');
+        win.document.write('<tr><td>F7</td><td>Testes/Entrega</td><td>R$ 13.000</td><td>R$ 20.000</td></tr>');
+        win.document.write('<tr style="font-weight:bold;background:#f5f5f5"><td colspan="2">TOTAL</td><td>R$ 555.000</td><td>R$ 791.000</td></tr>');
+        win.document.write('</tbody></table>');
+        win.document.write('<h2>Riscos Identificados</h2>');
+        win.document.write('<table><thead><tr><th>Risco</th><th>Probabilidade</th><th>Impacto</th></tr></thead><tbody>');
+        win.document.write('<tr><td>Atraso aprovações públicas</td><td><span class="badge warn">Média</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('<tr><td>Chuvas excessivas</td><td><span class="badge error">Alta</span></td><td><span class="badge warn">Médio</span></td></tr>');
+        win.document.write('<tr><td>Atraso entrega ACM/vidro</td><td><span class="badge warn">Média</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('<tr><td>Falta mão de obra</td><td><span class="badge warn">Média</span></td><td><span class="badge warn">Médio</span></td></tr>');
+        win.document.write('<tr><td>Variação preço aço/concreto</td><td><span class="badge error">Alta</span></td><td><span class="badge warn">Médio</span></td></tr>');
+        win.document.write('<tr><td>Acidente de trabalho</td><td><span class="badge ok">Baixa</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('<tr><td>Infiltração fachada</td><td><span class="badge warn">Média</span></td><td><span class="badge warn">Médio</span></td></tr>');
+        win.document.write('<tr><td>Erro locação pilares</td><td><span class="badge ok">Baixa</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('<tr><td>Falha concreto</td><td><span class="badge ok">Baixa</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('<tr><td>Atraso estr. metálica</td><td><span class="badge warn">Média</span></td><td><span class="badge error">Alto</span></td></tr>');
+        win.document.write('</tbody></table>');
+        win.document.write('<div class="footer"><p><strong>CPFM Implementos & Serviços</strong> — Relatório gerado em '+new Date().toLocaleString('pt-BR')+'</p><p>Rua: M, Qd 15, Lt 02 — Setor Campina Verde, Santa Tereza de Goiás - GO, 76480-000</p><p>Telefone: (62) 99346-5081</p><p style="margin-top:10px;color:#047245;font-weight:600">Desenvolvido por Souza Produções</p><p style="font-size:10px;color:#999">WhatsApp: +55 62 99144-4852</p></div>');
+        win.document.write('</body></html>');
+        win.document.close();
+        setTimeout(function(){win.print();},800);
+        showToast('PDF com gráficos pronto!');
+    }
+    function exportarCSV(){
+        var csv='Fase;Descrição;Mínimo;Máximo\n';
+        csv+='F0;Preparação;56000;85000\n';
+        csv+='F1;Fundações;43000;60000\n';
+        csv+='F2;Pilares;55000;75000\n';
+        csv+='F3;Vigas/Lajes;78000;105000\n';
+        csv+='F4;Estrutura Metálica;110000;155000\n';
+        csv+='F5;Instalações;65000;96000\n';
+        csv+='F6;Acabamentos;135000;195000\n';
+        csv+='F7;Testes/Entrega;13000;20000\n';
+        var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='CPFM_Orcamento_'+new Date().toISOString().split('T')[0]+'.csv';
+        document.body.appendChild(a);a.click();document.body.removeChild(a);
+        showToast('CSV exportado!');
+    }
+    function salvarMaterial(e){
+        e.preventDefault();
+        var tipo=document.getElementById('fMatTipo').value;
+        var material=document.getElementById('fMatNome').value;
+        var qtd=document.getElementById('fMatQtd').value;
+        var unidade=document.getElementById('fMatUnidade').value;
+        var fornecedor=document.getElementById('fMatFornecedor').value||'—';
+        var nf=document.getElementById('fMatNF').value||'—';
+        var valor=document.getElementById('fMatValor').value;
+        var nota=document.getElementById('fMatMatNota')?document.getElementById('fMatNota').value:'';
+        var tbody=document.querySelector('#page-materiais tbody')||document.getElementById('tbodyMateriais');
+        if(!tbody)return;
+        var tr=document.createElement('tr');
+        var badge=tipo==='pedido'?'info':tipo==='entrada'?'ok':'warn';
+        var badgeText=tipo==='pedido'?'Pedido':tipo==='entrada'?'Recebido':'Saída';
+        var valorFmt=valor?'R$ '+Number(valor).toLocaleString('pt-BR'):'—';
+        tr.innerHTML='<td><strong>'+esc(material)+'</strong></td><td>'+esc(qtd)+' '+esc(unidade)+'</td><td>'+esc(fornecedor)+'</td><td>'+esc(nf)+'</td><td>'+esc(valorFmt)+'</td><td><span class="badge '+badge+'"><span class="badge-dot"></span>'+esc(badgeText)+'</span></td><td style="font-size:11px;color:var(--g500)">'+esc(nota||'—')+'</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td>';
+        tbody.insertBefore(tr,tbody.firstChild);
+        fecharModal('modalMaterial');
+        document.getElementById('formMaterial').reset();
+        showToast(material+' registrado!');
+    }
+
+    // INIT
+    navegar('visao-geral');
+    document.getElementById('fData').valueAsDate=new Date();
+
+    // ========== CPFM AI - ASSISTENTE COM GROQ API ==========
+    // API key protegida no servidor (Vercel Environment Variables)
+    var GROQ_API_KEY='';
+    var GROQ_MODEL='llama-3.3-70b-versatile';
+    var SYSTEM_PROMPT='Você é o CPFM AI, assistente inteligente de gestão de obras da CPFM Implementos & Serviços. Responda SEMPRE em português brasileiro.\n\nDADOS DA EMPRESA:\n- Razão Social: CPFM Implementos & Serviços\n- Endereço: Rua: M, Quadra: 15, Lote: 02, Setor Campina Verde, Santa Tereza de Goiás - GO, 76480-000\n- Telefone: (62) 99346-5081\n\nDADOS DA OBRA:\n- Projeto: Edifício Comercial, Av. Min. Alfredo Nasser, 980, Formoso-GO\n- Proprietário: Paulo Henrique Fernandes de Oliveira\n- Responsável Técnico: Eng. Renato Coelho Borges (CREA: 1016062273D-GO)\n- Área total: 731,48 m² (2 pavimentos)\n- Área do terreno: 804,12 m²\n- Investimento estimado: R$ 682.650 - R$ 972.930\n- Custo por m²: R$ 933 - R$ 1.330/m²\n- Prazo: 12 meses (50 semanas)\n\nDADOS ATUAIS:\n- Progresso físico: 12% (previsto: 15%)\n- Fase atual: F0 - Preparação e Documentação\n- Custo executado: R$ 48.000 (orçado: R$ 70.000)\n- CPI: 0,69\n- Equipe: 38 de 48 funcionários (79%)\n- Itens críticos: 5 materiais abaixo do mínimo\n\nORÇAMENTO POR FASE:\n- F0 Preparação: R$ 56k-85k (executado: R$ 48k)\n- F1 Fundações: R$ 43k-60k (69 estacas + 42 blocos)\n- F2 Pilares: R$ 55k-75k (42 unidades)\n- F3 Vigas/Lajes: R$ 78k-105k (33 vigas + EPS)\n- F4 Estrutura Metálica: R$ 110k-155k (treliças)\n- F5 Instalações: R$ 65k-96k\n- F6 Acabamentos: R$ 135k-195k (fachada ACM)\n- F7 Testes/Entrega: R$ 13k-20k\n\nESTOQUE CRÍTICO:\n- Concreto C-20: 8m³ (mínimo: 20m³) - CRÍTICO\n- Vergalhão CA-60: 1,2 ton (mínimo: 1,5 ton)\n- Cimento CP-II: 45 sc (mínimo: 60 sc)\n- Tijolo 6 furos: 2 mil (mínimo: 8 mil) - CRÍTICO\n- Blocos EPS: 0 (mínimo: 30) - ZERADO\n\nRISCOS IDENTIFICADOS (10):\n1. Atraso aprovações públicas (Média/Alto)\n2. Chuvas excessivas (Alta/Médio)\n3. Atraso entrega ACM/vidro (Média/Alto)\n4. Falta mão de obra (Média/Médio)\n5. Variação preço aço/concreto (Alta/Médio)\n6. Acidente de trabalho (Baixa/Alto)\n7. Infiltração fachada (Média/Médio)\n8. Erro locação pilares (Baixa/Alto)\n9. Falha concreto (Baixa/Alto)\n10. Atraso estrutura metálica (Média/Alto)\n\nSeja direto, técnico e prático. Use emojis moderadamente. Dê recomendações acionáveis.';
+
+    function abrirChatIA(){
+        // Na Vercel, a API key está protegida no servidor (Environment Variables)
+        // Não é necessário pedir a key ao usuário
+        document.getElementById('aiChat').classList.add('active');
+        document.getElementById('aiChatOverlay').classList.add('active');
+        document.getElementById('aiInput').focus();
+    }
+    function fecharChatIA(){document.getElementById('aiChat').classList.remove('active');document.getElementById('aiChatOverlay').classList.remove('active');}
+
+    function enviarIA(){
+        var input=document.getElementById('aiInput');
+        var msg=input.value.trim();
+        if(!msg)return;
+        adicionarMsgChat(msg,'user');
+        input.value='';
+        mostrarTyping();
+        chamarGroqAPI(msg);
+    }
+
+    function perguntarIA(msg){
+        adicionarMsgChat(msg,'user');
+        mostrarTyping();
+        chamarGroqAPI(msg);
+    }
+
+    function adicionarMsgChat(msg,tipo){
+        var body=document.getElementById('aiChatBody');
+        var div=document.createElement('div');
+        div.className='ai-msg ai-msg-'+tipo;
+        if(tipo==='bot'){div.innerHTML='<div class="ai-msg-avatar">AI</div><div class="ai-msg-content">'+msg+'</div>';}
+        else{div.innerHTML='<div class="ai-msg-avatar">VO</div><div class="ai-msg-content"><p>'+esc(msg)+'</p></div>';}
+        body.appendChild(div);
+        body.scrollTop=body.scrollHeight;
+    }
+
+    function mostrarTyping(){
+        var body=document.getElementById('aiChatBody');
+        var div=document.createElement('div');
+        div.className='ai-msg ai-msg-bot';
+        div.id='aiTyping';
+        div.innerHTML='<div class="ai-msg-avatar">AI</div><div class="ai-msg-content"><div class="ai-typing"><span></span><span></span><span></span></div></div>';
+        body.appendChild(div);
+        body.scrollTop=body.scrollHeight;
+    }
+
+    function removerTyping(){var t=document.getElementById('aiTyping');if(t)t.remove();}
+
+    async function chamarGroqAPI(pergunta){
+        try{
+            // Chamada via API interna (Vercel Serverless) - chave protegida
+            var response=await fetch('/api/chat',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    prompt:pergunta,
+                    system:SYSTEM_PROMPT
+                })
+            });
+            removerTyping();
+            if(!response.ok){
+                var err=await response.json();
+                if(response.status===401){
+                    localStorage.removeItem('cpfm_groq_key');
+                    GROQ_API_KEY='';
+                    adicionarMsgChat('<p style="color:var(--error)"><strong>Erro de autenticação.</strong> API Key inválida. Recarregue a página e insira uma key válida de <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>','bot');
+                }else{
+                    adicionarMsgChat('<p style="color:var(--error)"><strong>Erro:</strong> '+(err.error?.message||'Erro ao comunicar com a IA')+'</p>','bot');
+                }
+                return;
+            }
+            var data=await response.json();
+            var resposta=data.choices[0]?.message?.content||'Desculpe, não consegui processar sua pergunta.';
+            resposta=resposta.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+            adicionarMsgChat('<p>'+resposta+'</p>','bot');
+        }catch(error){
+            removerTyping();
+            adicionarMsgChat('<p style="color:var(--error)"><strong>Erro de conexão.</strong> Verifique sua internet e tente novamente.</p>','bot');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded',function(){
+        var aiInput=document.getElementById('aiInput');
+        if(aiInput){aiInput.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();enviarIA();}});}
+    });
+    </script>
+</body>
+</html>
