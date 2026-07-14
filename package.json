@@ -1,0 +1,16 @@
+{
+  "name": "cpfm-obras",
+  "version": "1.0.0",
+  "description": "CPFM Implementos & Serviços — Sistema de Gestão de Obras",
+  "scripts": {
+    "start": "echo 'Abra index.html no navegador ou use Vercel para deploy'",
+    "test": "echo 'Testes podem ser adicionados com Jest, Vitest ou Cypress' && exit 0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["construcao", "gestao-obras", "cpfm"],
+  "author": "CPFM Implementos & Serviços",
+  "license": "UNLICENSED",
+  "private": true
+}
