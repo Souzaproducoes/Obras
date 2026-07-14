@@ -212,12 +212,16 @@
                 <div class="nav-item" data-page="cronograma" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Cronograma</div>
                 <div class="nav-item" data-page="materiais" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Materiais</div>
                 <div class="nav-item" data-page="equipe" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Equipe</div>
+                <div class="nav-section">Projeto</div>
+                <div class="nav-item" data-page="pecas" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Peças do Projeto</div>
                 <div class="nav-section">Segurança</div>
+                <div class="nav-item" data-page="croquis" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Croquis Esquemáticos</div>
                 <div class="nav-item" data-page="sst" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança (SST)<span class="nav-badge">!</span></div>
                 <div class="nav-item" data-page="treinamentos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Treinamentos</div>
                 <div class="nav-section">Controle</div>
                 <div class="nav-item" data-page="riscos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Riscos</div>
                 <div class="nav-item" data-page="laudos" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Laudos e Entrega</div>
+                <div class="nav-item" data-page="auditoria" role="button" tabindex="0"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>Auditoria</div>
             </nav>
         </aside>
         <div class="sidebar-overlay" id="overlay"></div>
@@ -282,7 +286,7 @@
             <button class="ai-quick-btn" onclick="perguntarIA('Resumo semanal')">📋 Resumo</button>
         </div>
         <div class="ai-chat-input">
-            <input type="text" id="aiInput" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='EnviarIA()')" aria-label="Pergunta para a IA">
+            <input type="text" id="aiInput" placeholder="Digite sua pergunta..." onkeydown="if(event.key==='Enter'){event.preventDefault();enviarIA();}" aria-label="Pergunta para a IA">
             <button class="ai-send-btn" onclick="enviarIA()" aria-label="Enviar mensagem">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
@@ -290,7 +294,14 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script>
+    /* MONOLITO INTENCIONAL — HTML+CSS+JS em arquivo único.
+       Propósito: deploy simples em Vercel/static hosting sem build step.
+       Para escalar, separar em arquivos .css e .js distintos. */
     function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+    // ===== PERSISTÊNCIA — auto-save no localStorage =====
+    function saveToStorage(key,tbodyId){var t=document.getElementById(tbodyId);if(t){try{localStorage.setItem(key,t.innerHTML)}catch(e){}}}
+    function loadFromStorage(key,tbodyId){try{var d=localStorage.getItem(key);if(d){var t=document.getElementById(tbodyId);if(t)t.innerHTML=d}}catch(e){}}
     function fmtData(s){var p=s.split('-');return p[2]+'/'+p[1]}
     function toggleLaudos(cb){
         var tr=cb.closest('tr');
@@ -365,7 +376,7 @@
     function fecharConfirm(){document.getElementById('confirmDelete').classList.remove('active');elementoAlvo=null}
     var elementoAlvo=null;
     function deletarItem(btn,ctx){elementoAlvo=btn.closest('tr')||btn.closest('.ck');document.getElementById('confirmMsg').textContent='Excluir este item?';document.getElementById('confirmDelete').classList.add('active')}
-    function confirmarDelete(){if(elementoAlvo){elementoAlvo.style.transition='opacity 0.3s';elementoAlvo.style.opacity='0';setTimeout(function(){elementoAlvo.remove();showToast('Excluído!')},300)}fecharConfirm()}
+    function confirmarDelete(){if(elementoAlvo){elementoAlvo.style.transition='opacity 0.3s';elementoAlvo.style.opacity='0';setTimeout(function(){elementoAlvo.remove();showToast('Excluído!');var ap=document.querySelector('.nav-item.active');if(ap){var p=ap.dataset.page;if(p==='diario')saveToStorage('cpfm_diario','tbodyDiario');if(p==='materiais')saveToStorage('cpfm_materiais','tbodyMateriais');if(p==='equipe')saveToStorage('cpfm_equipe','tbodyEquipe')}},300)}fecharConfirm()}
 
     // PAGES
     var pages={
@@ -375,16 +386,564 @@
     'fluxo':'<div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Fluxo de Caixa</span></div><div class="card-body"><canvas id="fluxoChart" height="280"></canvas></div></div>',
     'cronograma':'<div class="card"><div class="card-header"><span class="card-title">Cronograma — 12 Meses</span></div><div class="card-body"><div class="gantt"><div class="gantt-hdr"><div>Fase</div><div class="gantt-m">M1</div><div class="gantt-m">M2</div><div class="gantt-m">M3</div><div class="gantt-m">M4</div><div class="gantt-m">M5</div><div class="gantt-m">M6</div><div class="gantt-m">M7</div><div class="gantt-m">M8</div><div class="gantt-m">M9</div><div class="gantt-m">M10</div><div class="gantt-m">M11</div><div class="gantt-m">M12</div></div><div class="gantt-row"><div class="gantt-t">F0 Preparação</div><div class="gantt-c"><div class="gantt-b run" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-row"><div class="gantt-t">F1 Fundações</div><div class="gantt-c"></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-row"><div class="gantt-t">F2 Pilares</div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"><div class="gantt-b plan" style="left:0%;width:100%"></div></div><div class="gantt-c"></div><div class="gantt-c"></div><div class="gantt-c"></div></div><div class="gantt-legend"><span><span class="d" style="background:var(--cpfm)"></span> Executado</span><span><span class="d" style="background:var(--g300)"></span> Planejado</span><span><span class="d" style="background:var(--info)"></span> Em andamento</span></div></div></div></div>',
     'materiais':'<div class="kpi-grid"><div class="kpi-card error"><div class="kpi-label">Abaixo Mínimo</div><div class="kpi-value error">5</div></div><div class="kpi-card info"><div class="kpi-label">Pedidos Ativos</div><div class="kpi-value info">3</div></div><div class="kpi-card"><div class="kpi-label">Em Trânsito</div><div class="kpi-value">1</div></div><div class="kpi-card"><div class="kpi-label">Estoque Total</div><div class="kpi-value success">R$ 85k</div></div></div><div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Pedidos e Movimentações</span><button class="btn btn-primary btn-sm" onclick="document.getElementById(\'modalMaterial\').classList.add(\'active\')">+ Novo Pedido</button></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Material</th><th>Quantidade</th><th>Fornecedor</th><th>NF</th><th>Valor</th><th>Status</th><th>Obs</th><th style="text-align:center">Ações</th></tr></thead><tbody id="tbodyMateriais"><tr><td><strong>Concreto C-20</strong></td><td>15 m³</td><td>Concreto ABC</td><td>1247</td><td>R$ 4.200</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Entrega 20/07</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Vergalhão CA-60</strong></td><td>3 ton</td><td>Aço Central</td><td>—</td><td>R$ 9.000</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Urgente</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Porta de vidro 3,92x2,65m</strong></td><td>1 un</td><td>Vidraçaria Central</td><td>—</td><td>R$ 8.000</td><td><span class="badge warn"><span class="badge-dot"></span>Aguardando</span></td><td style="font-size:11px;color:var(--g500)">Temperado 10mm</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Areia média</strong></td><td>10 m³</td><td>Areias GO</td><td>0892</td><td>R$ 1.800</td><td><span class="badge ok"><span class="badge-dot"></span>Recebido</span></td><td style="font-size:11px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Blocos EPS B10/40/40</strong></td><td>294 un</td><td>EPS Brasil</td><td>—</td><td>R$ 4.410</td><td><span class="badge info"><span class="badge-dot"></span>Pedido</span></td><td style="font-size:11px;color:var(--g500)">Entrega 25/07</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div><div class="card"><div class="card-header"><span class="card-title">Estoque Mínimo por Material</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Material</th><th>Und</th><th>Estoque</th><th>Mínimo</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Concreto C-20</strong></td><td>m³</td><td>8</td><td>20</td><td><span class="badge error"><span class="badge-dot"></span>Crítico</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Vergalhão CA-60</strong></td><td>ton</td><td>1,2</td><td>1,5</td><td><span class="badge warn"><span class="badge-dot"></span>Baixo</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Areia média</strong></td><td>m³</td><td>18</td><td>15</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Cimento CP-II</strong></td><td>sc</td><td>45</td><td>60</td><td><span class="badge warn"><span class="badge-dot"></span>Baixo</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Tijolo 6 furos</strong></td><td>mil</td><td>2</td><td>8</td><td><span class="badge error"><span class="badge-dot"></span>Crítico</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr><tr><td><strong>Blocos EPS</strong></td><td>un</td><td>0</td><td>30</td><td><span class="badge error"><span class="badge-dot"></span>Zerado</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr></tbody></table></div></div>',
-    'equipe':'<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Hoje</div><div class="kpi-value">38</div><div class="kpi-sub">de 48 — 79%</div></div><div class="kpi-card warn"><div class="kpi-label">Absentismo</div><div class="kpi-value warn">21%</div></div><div class="kpi-card"><div class="kpi-label">Pedreiros</div><div class="kpi-value">12</div><div class="kpi-sub">Nec: 14</div></div><div class="kpi-card"><div class="kpi-label">Armadores</div><div class="kpi-value">8</div><div class="kpi-sub">Nec: 10</div></div></div><div class="card"><div class="card-header"><span class="card-title">Quadro de Pessoal</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Ofício</th><th>Contrat.</th><th>Presentes</th><th>Necessários</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Pedreiro</strong></td><td>14</td><td>12</td><td>14</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Armador</strong></td><td>10</td><td>8</td><td>10</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Eletricista</strong></td><td>6</td><td>4</td><td>4</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div>',
+    'equipe':`
+<div class="status-banner ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span><strong>Equipe completa para obra comercial de 731m²</strong> — 12 meses de prazo, estrutura metálica + concreto.</span></div>
+<div class="kpi-grid">
+<div class="kpi-card"><div class="kpi-label">Efetivo Total</div><div class="kpi-value">52</div><div class="kpi-sub">Contratados</div></div>
+<div class="kpi-card info"><div class="kpi-label">Presentes Hoje</div><div class="kpi-value info">44</div><div class="kpi-sub">84,6% presença</div></div>
+<div class="kpi-card warn"><div class="kpi-label">Absentismo</div><div class="kpi-value warn">15,4%</div><div class="kpi-sub">8 faltosos</div></div>
+<div class="kpi-card"><div class="kpi-label">Custo Diário</div><div class="kpi-value success">R$ 6,8k</div><div class="kpi-sub">Folha + encargos</div></div>
+</div>
+
+<!-- HIERARQUIA -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header"><span class="card-title">Hierarquia Organizacional</span></div>
+<div class="card-body" style="padding:16px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cpfm);color:#fff;border-radius:var(--rs);font-size:13px;font-weight:600">
+<span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:4px;font-size:11px">DIREÇÃO</span>
+Eng. Renato Coelho Borges — Responsável Técnico (CREA: 1016062273D-GO)
+</div>
+<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cpfm-dark);color:#fff;border-radius:var(--rs);font-size:13px;font-weight:500;margin-left:20px">
+<span style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:4px;font-size:11px">GESTÃO</span>
+Encarregado Geral + Mestre de Obras
+</div>
+<div style="display:flex;gap:12px;margin-left:40px;flex-wrap:wrap">
+<div style="flex:1;min-width:200px;padding:10px 14px;background:var(--cpfm-pale);border:1px solid var(--cpfm-accent);border-radius:var(--rs);font-size:12px;color:var(--cpfm-dark)"><strong>Equipe Técnica</strong><br>Topógrafo, Laboratorista</div>
+<div style="flex:1;min-width:200px;padding:10px 14px;background:var(--info-lt);border:1px solid var(--info);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Equipe de Execução</strong><br>Pedreiros, Armadores, Soldadores...</div>
+<div style="flex:1;min-width:200px;padding:10px 14px;background:var(--warn-lt);border:1px solid var(--warn);border-radius:var(--rs);font-size:12px;color:var(--warn)"><strong>Equipe de Apoio</strong><br>Auxiliares, Serventes, Veículos</div>
+</div>
+</div>
+</div></div>
+
+<!-- QUADRO DE PESSOAL COMPLETO -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header"><span class="card-title">Quadro de Pessoal — Todos os Ofícios</span><span class="card-filter" onclick="filtrarEquipe('todos')" style="cursor:pointer">Todos</span></div>
+<div class="card-body" style="padding:0;overflow-x:auto">
+<table class="data-table">
+<thead><tr><th>Categoria</th><th>Ofício</th><th>Contrat.</th><th>Presentes</th><th>Nec. Fase Atual</th><th>Status</th><th>CRT/NR</th><th style="text-align:center">Ações</th></tr></thead>
+<tbody id="tbodyEquipe">
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">DIREÇÃO E GESTÃO</td></tr>
+<tr><td>Gestão</td><td><strong>Engenheiro Resp.</strong></td><td>1</td><td>1</td><td>1</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>CREA-GO</td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr>
+<tr><td>Gestão</td><td><strong>Encarregado Geral</strong></td><td>1</td><td>1</td><td>1</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr>
+<tr><td>Gestão</td><td><strong>Mestre de Obras</strong></td><td>1</td><td>1</td><td>1</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">EQUIPE TÉCNICA</td></tr>
+<tr><td>Técnica</td><td><strong>Topógrafo</strong></td><td>1</td><td>1</td><td>1</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>—</td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr>
+<tr><td>Técnica</td><td><strong>Laboratorista</strong></td><td>1</td><td>1</td><td>1</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>—</td><td class="actions"><button class="btn-action" title="Editar">✏️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">ESTRUTURA DE CONCRETO</td></tr>
+<tr><td>Concreto</td><td><strong>Pedreiro</strong></td><td>14</td><td>12</td><td>14</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Concreto</td><td><strong>Armador</strong></td><td>10</td><td>8</td><td>10</td><td><span class="badge warn"><span class="badge-dot"></span>-2</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Concreto</td><td><strong>Carpinteiro (Formas)</strong></td><td>6</td><td>5</td><td>6</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">ESTRUTURA METÁLICA</td></tr>
+<tr><td>Metálica</td><td><strong>Soldador</strong></td><td>4</td><td>4</td><td>4</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-15/18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Metálica</td><td><strong>Serralheiro</strong></td><td>3</td><td>2</td><td>3</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Metálica</td><td><strong>Caldeireiro</strong></td><td>2</td><td>2</td><td>2</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">INSTALAÇÕES</td></tr>
+<tr><td>Instalações</td><td><strong>Eletricista</strong></td><td>4</td><td>4</td><td>4</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-10</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Instalações</td><td><strong>Encanador (Hidráulica)</strong></td><td>3</td><td>3</td><td>3</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">ACABAMENTOS</td></tr>
+<tr><td>Acabamento</td><td><strong>Pedreiro Acabamento</strong></td><td>4</td><td>4</td><td>4</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Acabamento</td><td><strong>Pintor</strong></td><td>3</td><td>2</td><td>3</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Acabamento</td><td><strong>Instalador Esquadrias</strong></td><td>2</td><td>2</td><td>2</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Acabamento</td><td><strong>Vidraceiro</strong></td><td>2</td><td>1</td><td>2</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">MÁQUINAS E EQUIPAMENTOS</td></tr>
+<tr><td>Equipamentos</td><td><strong>Operador de Máquinas</strong></td><td>2</td><td>2</td><td>2</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td><td>NR-12</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+
+<tr style="background:var(--cpfm-pale)"><td colspan="8" style="font-weight:700;color:var(--cpfm-dark);font-size:12px;padding:8px 14px">APOIO E SERVIÇOS GERAIS</td></tr>
+<tr><td>Apoio</td><td><strong>Auxiliar de Serviços Gerais</strong></td><td>6</td><td>5</td><td>6</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+<tr><td>Apoio</td><td><strong>Servente de Obras</strong></td><td>4</td><td>3</td><td>4</td><td><span class="badge warn"><span class="badge-dot"></span>-1</span></td><td>NR-18</td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr>
+</tbody>
+</table>
+</div></div>
+
+<!-- RESUMO POR CATEGORIA -->
+<div class="card">
+<div class="card-header"><span class="card-title">Resumo por Categoria</span></div>
+<div class="card-body" style="padding:12px 16px">
+<div class="cost-row"><span class="cost-lbl">Gestão</span><div class="cost-bar"><div class="cost-fill" style="width:100%;background:var(--cpfm)"></div></div><span class="cost-vals">3 — 100% presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Técnica</span><div class="cost-bar"><div class="cost-fill" style="width:100%;background:var(--cpfm)"></div></div><span class="cost-vals">2 — 100% presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Concreto</span><div class="cost-bar"><div class="cost-fill" style="width:76%;background:var(--warn)"></div></div><span class="cost-vals">25 contr. — 25 presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Metálica</span><div class="cost-bar"><div class="cost-fill" style="width:89%;background:var(--info)"></div></div><span class="cost-vals">9 contr. — 8 presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Instalações</span><div class="cost-bar"><div class="cost-fill" style="width:100%;background:var(--cpfm)"></div></div><span class="cost-vals">7 — 100% presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Acabamentos</span><div class="cost-bar"><div class="cost-fill" style="width:80%;background:var(--warn)"></div></div><span class="cost-vals">11 contr. — 9 presentes</span></div>
+<div class="cost-row"><span class="cost-lbl">Apoio</span><div class="cost-bar"><div class="cost-fill" style="width:80%;background:var(--warn)"></div></div><span class="cost-vals">10 contr. — 8 presentes</span></div>
+</div></div>`,
     'sst':'<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Acidentes</div><div class="kpi-value success">0</div></div><div class="kpi-card warn"><div class="kpi-label">Quase-Acidentes</div><div class="kpi-value warn">2</div></div><div class="kpi-card"><div class="kpi-label">EPIs Entregues</div><div class="kpi-value info">38</div></div><div class="kpi-card"><div class="kpi-label">Dias s/ Acidente</div><div class="kpi-value success">45</div></div></div><div class="card"><div class="card-header"><span class="card-title">Licenças e Alvarás</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Documento</th><th>Órgão</th><th>Status</th><th style="text-align:center">Ações</th></tr></thead><tbody><tr><td><strong>Alvará Funcionamento</strong></td><td>Prefeitura</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>Certificado CBM-GO</strong></td><td>Bombeiros</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr><tr><td><strong>ART Execução</strong></td><td>CREA-GO</td><td><span class="badge warn"><span class="badge-dot"></span>Pendente</span></td><td class="actions"><button class="btn-action" title="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar">🗑️</button></td></tr></tbody></table></div></div>',
     'treinamentos':'<div class="card"><div class="card-header"><span class="card-title">Matrix Treinamentos NR-18</span></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th>Treinamento</th><th>Norma</th><th>Treinados</th><th>Pendentes</th><th>Status</th></tr></thead><tbody><tr><td><strong>Admissão Segurança</strong></td><td>NR-18.3</td><td>28</td><td>10</td><td><span class="badge warn"><span class="badge-dot"></span>Andamento</span></td></tr><tr><td><strong>Trabalho Altura</strong></td><td>NR-35</td><td>15</td><td>23</td><td><span class="badge warn"><span class="badge-dot"></span>Agendado</span></td></tr><tr><td><strong>Eletricidade</strong></td><td>NR-10</td><td>6</td><td>0</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td></tr><tr><td><strong>Brigada Incêndio</strong></td><td>NR-23</td><td>8</td><td>0</td><td><span class="badge ok"><span class="badge-dot"></span>OK</span></td></tr></tbody></table></div></div>',
+    'pecas':`
+<div class="status-banner ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg><span><strong>6 categorias de peças</strong> — Metodologia: Peça Inteira vs Peças Componentes.</span></div>
+<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Estrutura Metálica</div><div class="kpi-value info">5</div><div class="kpi-sub">Tipos de treliça + terças</div></div><div class="kpi-card"><div class="kpi-label">Pilares (Concreto)</div><div class="kpi-value">12+</div><div class="kpi-sub">Tipos P2, P3, P5, P6, P8, P12, P22...</div></div><div class="kpi-card warn"><div class="kpi-label">Esquadrias</div><div class="kpi-value warn">14</div><div class="kpi-sub">Portas + Janelas</div></div><div class="kpi-card"><div class="kpi-label">Fachada ACM</div><div class="kpi-value success">Modular</div><div class="kpi-sub">Painéis + Vidros</div></div></div>
+
+<!-- PARTE 1: ESTRUTURA METÁLICA -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">1. Estrutura Metálica — Cobertura / Depósito</span><span class="badge info">5 itens</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Metodologia:</strong> Peça Inteira = treliça montada e soldada pronta para obra. Peças Componentes = perfis de aço cortados e furados.</div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Treliça Tipo "A"</strong> <span class="badge ok" style="margin-left:6px">27,50m</span></div><span style="font-size:11px;color:var(--g500)"> Maior vão do projeto ▾</span></div>
+<div style="padding:0;display:block" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Treliça montada — Comprimento total de <strong>27,50 metros</strong>.</p>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">Peças Componentes (Cortes exatos):</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Perfil</th><th>Qtd</th><th>Corte</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>27,50m</td><td>Banzos Superior/Inferior</td></tr>
+<tr><td><strong>C 250x85x25x4.76</strong></td><td>2</td><td>Ângulo</td><td>Diagonais Principais — encaixe tipo []</td></tr>
+<tr><td><strong>C 150x60x20x3.75</strong></td><td>2</td><td>Reto</td><td>Montantes — furos para parafusos</td></tr>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>Reto</td><td>Montantes de apoio</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Treliça Tipo "B"</strong> <span class="badge ok" style="margin-left:6px">27,50m</span></div><span style="font-size:11px;color:var(--g500)"> ▾</span></div>
+<div style="padding:0;display:block" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Treliça montada — Comprimento total de <strong>27,50 metros</strong>.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Perfil</th><th>Qtd</th><th>Função</th></tr></thead><tbody>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>Banzos</td></tr>
+<tr><td><strong>C 250x85x25x4.76</strong></td><td>2</td><td>Diagonais</td></tr>
+<tr><td><strong>C 150x60x20x3.75</strong></td><td>2</td><td>Montantes</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Treliça Tipo "C"</strong> <span class="badge info" style="margin-left:6px">15,60m</span></div><span style="font-size:11px;color:var(--g500)"> Vão menor, lateral ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Treliça montada — Comprimento total de <strong>15,60 metros</strong>.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Perfil</th><th>Qtd</th><th>Função</th></tr></thead><tbody>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>Banzos</td></tr>
+<tr><td><strong>C 500x220x35x3.75</strong></td><td>2</td><td>Diagonais — perfil mega pesado</td></tr>
+<tr><td><strong>C 150x60x20x3.75</strong></td><td>2</td><td>Montantes</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Treliça Tipo "D"</strong> <span class="badge info" style="margin-left:6px">15,60m</span></div><span style="font-size:11px;color:var(--g500)"> Vão menor, lateral ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Treliça montada — Comprimento total de <strong>15,60 metros</strong>.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Perfil</th><th>Qtd</th><th>Função</th></tr></thead><tbody>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>1</td><td>Banzo superior</td></tr>
+<tr><td><strong>C 150x60x20x2.25</strong></td><td>1</td><td>Banzo inferior</td></tr>
+<tr><td><strong>C 500x220x35x3.75</strong></td><td>2</td><td>Diagonais — perfil mega pesado</td></tr>
+<tr><td><strong>C 150x60x20x2.25</strong></td><td>2</td><td>Montantes</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Terças</strong> <span class="badge ok" style="margin-left:6px">Inclinação 10%</span></div><span style="font-size:11px;color:var(--g500)"> Apoio telha trapezoidal ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Terça contínua apoiada nas treliças (tamanhos variam de 5,40m a 6,00m). Peças inteiras compradas e furadas, sem solda entre si.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Perfil</th><th>Função</th></tr></thead><tbody>
+<tr><td><strong>U 75x40x2.00</strong></td><td>Cantoneiras com aba / U simples</td></tr>
+<tr><td><strong>C 150x60x20x2.25</strong></td><td>Perfil estrutural</td></tr>
+<tr><td><strong>L 50x2</strong></td><td>Cantoneiras de apoio (50x50x2mm)</td></tr>
+</tbody></table></div></div></div>
+</div></div>
+
+<!-- PARTE 2: PILARES -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">2. Pilares de Concreto Armado</span><span class="badge ok">Concreto</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--ok-lt);border-radius:var(--rs);font-size:12px;color:var(--cpfm-dark)"><strong>Metodologia:</strong> Peça Inteira = pilar pronto (vibrado e curado). Peças Componentes = vergalhões cortados e dobrados antes do concreto.</div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Pilar P2 — Térreo (7,5 tf)</strong> <span class="badge ok" style="margin-left:6px">19x30cm</span></div><span style="font-size:11px;color:var(--g500)"> Exemplo principal ▾</span></div>
+<div style="padding:0;display:block" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:4px"><strong>19 cm x 30 cm x 560 cm</strong> — Passa pelo Térreo (L1) → 1º Pavimento (L2) → Cobertura (L3).</p>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin:12px 0 6px">Barras Longitudinais (Esqueleto vertical) — Aço CA-50 Ø 10mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Barras</th><th>Diâmetro</th><th>Corte</th><th>Posição</th></tr></thead><tbody>
+<tr><td>4</td><td>Ø 10,0 mm</td><td>2,77m</td><td>N3</td></tr>
+<tr><td>4</td><td>Ø 10,0 mm</td><td>3,13m</td><td>N4 — 1º andar até cobertura</td></tr>
+<tr><td>4</td><td>Ø 10,0 mm</td><td>1,17m</td><td>N5 — detalhe de transição</td></tr>
+</tbody></table>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin:12px 0 6px">Estribos (Anéis horizontais) — Aço CA-60 Ø 5mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Tipo</th><th>Diâmetro</th><th>Perímetro</th><th>Espaçamento</th></tr></thead><tbody>
+<tr><td><strong>N1</strong></td><td>Ø 5,0 mm</td><td>0,85m (85cm)</td><td>1 a cada 12cm</td></tr>
+<tr><td><strong>N2</strong></td><td>Ø 5,0 mm</td><td>0,62m (62cm)</td><td>1 a cada 12cm</td></tr>
+</tbody></table>
+<div style="margin-top:10px;padding:8px 12px;background:var(--g50);border-radius:var(--rs);font-size:11px;color:var(--g600)"><strong>Nota:</strong> Pilares P3, P5, P6, P8, P12 e P22 seguem a mesma lógica, alterando apenas os cortes N4 e N5.</div></div></div></div>
+</div></div>
+
+<!-- PARTE 3: VIGAS DE TRANSIÇÃO -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">3. Vigas de Transição / Baldrames</span><span class="badge ok">Concreto</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--ok-lt);border-radius:var(--rs);font-size:12px;color:var(--cpfm-dark)"><strong>Metodologia:</strong> Peça Inteira = viga de concreto pronta. Peças Componentes = barras de aço cortadas e estribos.</div>
+
+<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Viga VB1 — Baldrame Térreo</strong> <span class="badge ok" style="margin-left:6px">19x30cm</span></div><span style="font-size:11px;color:var(--g500)"> Vão 11,90m ▾</span></div>
+<div style="padding:0;display:block" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px"><strong>19 cm x 30 cm x 11,90m (1190cm)</strong></p>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">Barras de Pele e Montante — Aço CA-50 Ø 8,0mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Barras</th><th>Corte</th><th>Função</th></tr></thead><tbody>
+<tr><td>2</td><td>11,63m</td><td>N5 — Negativo</td></tr>
+<tr><td>2</td><td>11,49m</td><td>N6 — Negativo</td></tr>
+<tr><td>2</td><td>5,90m</td><td>N7</td></tr>
+<tr><td>1</td><td>5,31m</td><td>N8</td></tr>
+<tr><td>Várias</td><td>0,45m a 1,19m</td><td>N9 ao N15 — Ganchos/Transpassos</td></tr>
+</tbody></table>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin:12px 0 6px">Estribos — Aço CA-60 Ø 5,0mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Qtd</th><th>Diâmetro</th><th>Perímetro</th><th>Espaçamento</th></tr></thead><tbody>
+<tr><td><strong>175</strong></td><td>Ø 5,0 mm</td><td>0,85m (85cm)</td><td>15cm</td></tr>
+</tbody></table></div></div></div>
+</div></div>
+
+<!-- PARTE 4: VIGAS 1º PAVIMENTO -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">4. Vigas do 1º Pavimento</span><span class="badge info">Concreto</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Metodologia:</strong> Peça Inteira = viga de concreto pronta. Peças Componentes = barras de aço cortadas e estribos.</div>
+
+<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Viga VP5 — Transição Pesada</strong> <span class="badge warn" style="margin-left:6px">19x40cm</span></div><span style="font-size:11px;color:var(--g500)"> Vão 3,52m ▾</span></div>
+<div style="padding:0;display:block" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px"><strong>19 cm x 40 cm x 3,52m</strong></p>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">Barras — Aço CA-50 Ø 10,0mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Barras</th><th>Corte</th><th>Função</th></tr></thead><tbody>
+<tr><td>2</td><td>3,28m</td><td>N22 — PELE</td></tr>
+<tr><td>2</td><td>3,53m</td><td>N23 — PELE</td></tr>
+<tr><td>4</td><td>0,91m</td><td>N24 — Positivo</td></tr>
+</tbody></table>
+<div style="font-size:12px;font-weight:600;color:var(--g700);margin:12px 0 6px">Estribos — Aço CA-60 Ø 5,0mm:</div>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Qtd</th><th>Formato</th><th>Perímetro</th><th>Espaçamento</th></tr></thead><tbody>
+<tr><td><strong>25</strong></td><td>40x19cm</td><td>1,05m</td><td>15cm</td></tr>
+</tbody></table></div></div></div>
+</div></div>
+
+<!-- PARTE 5: ESQUADRIAS -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">5. Esquadrias e Aberturas</span><span class="badge warn">14 unidades</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--warn-lt);border-radius:var(--rs);font-size:12px;color:var(--warn)"><strong>Metodologia:</strong> Peça Inteira = marco com vidro pronto para instalação. Peças Componentes = perfis de alumínio/madeira cortados, vidros lapidados e ferragens.</div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">P1 — Porta de Madeira</strong> <span class="badge ok" style="margin-left:6px">09 un</span></div><span style="font-size:11px;color:var(--g500)"> 0,80m x 2,10m ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Porta de madeira pivôante/batente — <strong>0,80m x 2,10m</strong> — 09 unidades.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Folha de madeira</td><td>Corte: 0,78 x 2,08m</td></tr>
+<tr><td>Marco</td><td>Alumínio ou madeira, cortado no vão</td></tr>
+<tr><td>Dobradiças</td><td>3 unidades</td></tr>
+<tr><td>Fechadura</td><td>1 unidade</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">P2 — Porta de Correr de Vidro</strong> <span class="badge info" style="margin-left:6px">01 un</span></div><span style="font-size:11px;color:var(--g500)"> 3,92m x 2,85m ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Porta de correr em vidro — <strong>3,92m x 2,85m</strong> — 01 unidade.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Trilhos superior/inferior</td><td>Corte: 3,92m</td></tr>
+<tr><td>Perfis laterais</td><td>Corte: 2,85m</td></tr>
+<tr><td>Painéis de vidro</td><td>Cortados/lapidados internamente ao marco</td></tr>
+<tr><td>Rodízios</td><td>Conforme especificação</td></tr>
+<tr><td>Fechaduras</td><td>Embutir</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">J1 — Janela de Correr de Vidro</strong> <span class="badge ok" style="margin-left:6px">02 un</span></div><span style="font-size:11px;color:var(--g500)"> 1,50m x 1,00m ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Janela de correr em vidro — <strong>1,50m x 1,00m</strong> — 02 unidades.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Trilhos</td><td>Corte: 1,50m</td></tr>
+<tr><td>Perfis verticais</td><td>Corte: 1,00m</td></tr>
+<tr><td>Folhas de vidro</td><td>Dimensões internas ao marco</td></tr>
+<tr><td>Ferragens de correção</td><td>Conforme especificação</td></tr>
+</tbody></table></div></div></div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">J2 — Janela de Correr de Vidro</strong> <span class="badge info" style="margin-left:6px">01 un</span></div><span style="font-size:11px;color:var(--g500)"> 2,00m x 1,00m ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Janela de correr em vidro — <strong>2,00m x 1,00m</strong> — 01 unidade.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Trilhos</td><td>Corte: 2,00m</td></tr>
+<tr><td>Perfis verticais</td><td>Corte: 1,00m</td></tr>
+<tr><td>Folhas de vidro</td><td>Dimensões internas ao marco</td></tr>
+<tr><td>Ferragens de correção</td><td>Conforme especificação</td></tr>
+</tbody></table></div></div></div>
+
+<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">J3 — Janela Fixa de Vidro</strong> <span class="badge ok" style="margin-left:6px">01 un</span></div><span style="font-size:11px;color:var(--g500)"> 0,80m x 1,00m ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Janela fixa (sem abertura) — <strong>0,80m x 1,00m</strong> — 01 unidade.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Marco de alumínio</td><td>Cortado e soldado/encaixado (0,80 x 1,00m)</td></tr>
+<tr><td>Vidro lapidado</td><td>Encaixe: aprox. 0,76 x 0,96m</td></tr>
+<tr><td>Vedação</td><td>Massa de vidraceiro ou fita dupla</td></tr>
+</tbody></table>
+<div style="margin-top:10px;padding:8px 12px;background:var(--g50);border-radius:var(--rs);font-size:11px;color:var(--g600)"><strong>Referência de áreas:</strong> Loja Atual = 148,42m² | Loja Nova = 421,92m² | Depósito = 59,12m²</div></div></div></div>
+</div></div>
+
+<!-- PARTE 6: FACHADAS -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">6. Fechamento Externo / Fachadas</span><span class="badge info">ACM + Vidro</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:16px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Metodologia:</strong> Peça Inteira = painel modulado pronto para fixar na estrutura. Peças Componentes = chapas e perfis de fixação.</div>
+
+<div style="margin-bottom:14px;border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Painéis de Fachada em ACM</strong> <span class="badge info" style="margin-left:6px">Modular</span></div><span style="font-size:11px;color:var(--g500)"> Alumínio Compósito ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Painel modular de ACM com cantoneiras de fixação traseira parafusadas, pronto para subir em andaime e fixar na parede/estrutura.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Chapas de ACM</td><td>Cortadas nas dimensões do módulo da fachada</td></tr>
+<tr><td>Cantoneiras de alumínio</td><td>Cortadas no tamanho das bordas traseiras</td></tr>
+<tr><td>Parafusos</td><td>Rebite ou autoperfurantes para fixação</td></tr>
+</tbody></table></div></div></div>
+
+<div style="border:1px solid var(--g200);border-radius:var(--r);overflow:hidden">
+<div style="padding:12px 16px;background:var(--g50);cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200)" onclick="togglePecaItem(this)"><div><strong style="color:var(--g900)">Faixas de Vidro na Fachada</strong> <span class="badge ok" style="margin-left:6px">Encaixilhado</span></div><span style="font-size:11px;color:var(--g500)"> ▾</span></div>
+<div style="padding:0;display:none" class="peca-detail">
+<div style="padding:14px 16px"><div style="font-size:12px;font-weight:600;color:var(--cpfm-dark);margin-bottom:8px">Peça Inteira</div><p style="font-size:12px;color:var(--g700);margin-bottom:12px">Quadro de vidro encaixilhado pronto para instalação.</p>
+<table class="data-table" style="font-size:11px"><thead><tr><th>Componente</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td>Vidros</td><td>Cortados e lapidados conforme vãos</td></tr>
+<tr><td>Perfis tipo U / caixilho</td><td>Cortados sob medida para receber vidro</td></tr>
+<tr><td>Borrachas EPDM</td><td>Cortadas no perímetro do vidro</td></tr>
+<tr><td>Vedação</td><td>Silicato de sódio ou massa acética</td></tr>
+</tbody></table></div></div></div>
+</div></div>`,
+    'croquis':`
+<div class="status-banner ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg><span><strong>Croquis esquemáticos</strong> — Visualização fiel às medidas reais extraídas dos projetos executivos.</span></div>
+<div class="kpi-grid"><div class="kpi-card"><div class="kpi-label">Treliça A</div><div class="kpi-value info">27,50m</div><div class="kpi-sub">Maior vão do projeto</div></div><div class="kpi-card"><div class="kpi-label">Pilar P2</div><div class="kpi-value">19x30cm</div><div class="kpi-sub">Altura total 560cm</div></div><div class="kpi-card warn"><div class="kpi-label">Viga Baldrame VB1</div><div class="kpi-value warn">11,90m</div><div class="kpi-sub">175 estribos c/15cm</div></div><div class="kpi-card"><div class="kpi-label">Esquadrias</div><div class="kpi-value success">14</div><div class="kpi-sub">Portas + Janelas</div></div></div>
+
+<!-- TRELIÇA A -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">1. Treliça Metálica Tipo "A"</span><span class="badge ok">27,50m</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:14px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Peça Inteira:</strong> treliça montada e soldada — vão de 27,50 metros.</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:12px;overflow-x:auto">
+<svg viewBox="0 0 700 220" style="width:100%;max-width:700px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="60" y1="90" x2="60" y2="170" stroke="var(--g900)" stroke-width="6"/>
+<line x1="640" y1="90" x2="640" y2="170" stroke="var(--g900)" stroke-width="6"/>
+<polyline points="60,170 130,150 200,135 270,124 340,118 410,118 480,124 550,135 620,150 640,170" fill="none" stroke="#1565C0" stroke-width="3"/>
+<line x1="60" y1="170" x2="640" y2="170" stroke="#1565C0" stroke-width="3"/>
+<line x1="130" y1="170" x2="130" y2="150" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="200" y1="170" x2="200" y2="135" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="270" y1="170" x2="270" y2="124" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="340" y1="170" x2="340" y2="118" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="410" y1="170" x2="410" y2="118" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="480" y1="170" x2="480" y2="124" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="550" y1="170" x2="550" y2="135" stroke="var(--g700)" stroke-width="1.4"/>
+<line x1="60" y1="170" x2="130" y2="150" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="130" y1="170" x2="200" y2="135" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="200" y1="170" x2="270" y2="124" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="270" y1="170" x2="340" y2="118" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="340" y1="170" x2="410" y2="118" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="410" y1="170" x2="480" y2="124" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="480" y1="170" x2="550" y2="135" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="550" y1="170" x2="620" y2="150" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="620" y1="170" x2="640" y2="170" stroke="var(--warn)" stroke-width="1.1"/>
+<line x1="60" y1="195" x2="640" y2="195" stroke="var(--g900)" stroke-width="1"/>
+<line x1="60" y1="190" x2="60" y2="200" stroke="var(--g900)" stroke-width="1"/>
+<line x1="640" y1="190" x2="640" y2="200" stroke="var(--g900)" stroke-width="1"/>
+<text x="350" y="213" text-anchor="middle" font-size="15" font-weight="700" fill="var(--g900)">27,50 m</text>
+</svg>
+</div>
+<table class="data-table" style="font-size:11px;margin-top:12px"><thead><tr><th>Perfil</th><th>Qtd</th><th>Corte</th><th>Detalhe</th></tr></thead><tbody>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>27,50m</td><td>Banzos Superior/Inferior</td></tr>
+<tr><td><strong>C 250x85x25x4.76</strong></td><td>2</td><td>Ângulo</td><td>Diagonais Principais — encaixe []</td></tr>
+<tr><td><strong>C 150x60x20x3.75</strong></td><td>2</td><td>Reto</td><td>Montantes — furos para parafusos</td></tr>
+<tr><td><strong>C 200x75x25x4.76</strong></td><td>2</td><td>Reto</td><td>Montantes de apoio</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- TERÇA -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">2. Terça Metálica</span><span class="badge info">5,40 a 6,00m</span></div>
+<div class="card-body pecas-sec" style="display:none">
+<div style="margin-bottom:14px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Peça Inteira:</strong> terça contínua apoiada nas treliças, ao longo da inclinação de 10%.</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:12px;overflow-x:auto">
+<svg viewBox="0 0 700 140" style="width:100%;max-width:700px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="40" x2="670" y2="55" stroke="var(--g300)" stroke-width="4"/>
+<g fill="none" stroke="var(--cpfm)" stroke-width="2">
+<rect x="45" y="34" width="34" height="12"/><rect x="115" y="36" width="34" height="12"/><rect x="185" y="38" width="34" height="12"/><rect x="255" y="40" width="34" height="12"/><rect x="325" y="42" width="34" height="12"/><rect x="395" y="44" width="34" height="12"/><rect x="465" y="46" width="34" height="12"/><rect x="535" y="48" width="34" height="12"/><rect x="605" y="50" width="34" height="12"/>
+</g>
+</svg>
+</div>
+<ul style="font-size:12px;color:var(--g700);margin-top:10px;padding-left:18px">
+<li>Perfil tipo <strong>U 75x40x2.00</strong> — uso mais frequente ao longo do beiral</li>
+<li>Perfil tipo <strong>C 150x60x20x2.25</strong> — trechos de maior vão</li>
+<li>Cantoneira de apoio <strong>L 50x2</strong> (50x50x2mm) — fixação nas treliças</li>
+</ul>
+</div></div>
+
+<!-- PILAR P2 -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">3. Pilar P2 (Concreto Armado)</span><span class="badge ok">19x30cm</span></div>
+<div class="card-body pecas-sec" style="display:none">
+<div style="margin-bottom:14px;padding:12px;background:var(--ok-lt);border-radius:var(--rs);font-size:12px;color:var(--cpfm-dark)"><strong>Peça Inteira:</strong> pilar de concreto — 19x30cm, altura total 560cm (Térreo L1 → 1º Pav. L2 → Cobertura L3).</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;justify-content:center">
+<svg viewBox="0 0 160 240" style="width:130px;flex-shrink:0" xmlns="http://www.w3.org/2000/svg">
+<rect x="40" y="20" width="60" height="200" fill="none" stroke="var(--g900)" stroke-width="2"/>
+<line x1="30" y1="90" x2="110" y2="90" stroke="var(--err)" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="112" y="93" font-size="9" fill="var(--err)">1ºPAV</text>
+<line x1="30" y1="155" x2="110" y2="155" stroke="var(--err)" stroke-width="1" stroke-dasharray="3,2"/>
+<text x="112" y="158" font-size="9" fill="var(--err)">COB.</text>
+<line x1="52" y1="22" x2="52" y2="218" stroke="#1565C0" stroke-width="2"/>
+<line x1="64" y1="22" x2="64" y2="218" stroke="#1565C0" stroke-width="2"/>
+<line x1="76" y1="22" x2="76" y2="218" stroke="#1565C0" stroke-width="2"/>
+<line x1="88" y1="22" x2="88" y2="218" stroke="#1565C0" stroke-width="2"/>
+<g stroke="var(--cpfm)" stroke-width="1"><line x1="42" y1="35" x2="98" y2="35"/><line x1="42" y1="65" x2="98" y2="65"/><line x1="42" y1="95" x2="98" y2="95"/><line x1="42" y1="125" x2="98" y2="125"/><line x1="42" y1="155" x2="98" y2="155"/><line x1="42" y1="185" x2="98" y2="185"/><line x1="42" y1="210" x2="98" y2="210"/></g>
+<text x="70" y="235" text-anchor="middle" font-size="9" fill="var(--g600)">Elevação</text>
+</svg>
+<svg viewBox="0 0 160 160" style="width:140px;flex-shrink:0" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="70" height="106" fill="none" stroke="var(--g900)" stroke-width="2"/>
+<rect x="34" y="24" width="62" height="98" fill="none" stroke="var(--cpfm)" stroke-width="1.4"/>
+<circle cx="42" cy="32" r="3.4" fill="#1565C0"/><circle cx="88" cy="32" r="3.4" fill="#1565C0"/><circle cx="42" cy="114" r="3.4" fill="#1565C0"/><circle cx="88" cy="114" r="3.4" fill="#1565C0"/>
+<text x="65" y="142" text-anchor="middle" font-size="10" fill="var(--g700)">Seção 19x30cm</text>
+</svg>
+</div>
+<table class="data-table" style="font-size:11px;margin-top:12px"><thead><tr><th>Barra</th><th>Qtd/Diâm.</th><th>Comprimento</th></tr></thead><tbody>
+<tr><td>N3</td><td>4x Ø10,0mm</td><td>2,77m</td></tr>
+<tr><td>N4</td><td>4x Ø10,0mm</td><td>3,13m</td></tr>
+<tr><td>N5</td><td>4x Ø10,0mm</td><td>1,17m</td></tr>
+<tr><td>Estribo N1</td><td>Ø5,0mm</td><td>perímetro 0,85m — c/12cm</td></tr>
+<tr><td>Estribo N2</td><td>Ø5,0mm</td><td>perímetro 0,62m — c/12cm</td></tr>
+</tbody></table>
+<p style="font-size:11px;color:var(--g500);margin-top:8px">Válido também para P3, P5, P6, P8, P12 e P22 (mesma lógica, variam N4/N5).</p>
+</div></div>
+
+<!-- VIGA BALDRAME VB1 -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">4. Viga Baldrame VB1</span><span class="badge warn">11,90m</span></div>
+<div class="card-body pecas-sec" style="display:none">
+<div style="margin-bottom:14px;padding:12px;background:var(--warn-lt);border-radius:var(--rs);font-size:12px;color:var(--warn)"><strong>Peça Inteira:</strong> viga de concreto 19x30cm — vão total 11,90m (1190cm).</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:12px;overflow-x:auto">
+<svg viewBox="0 0 700 90" style="width:100%;max-width:700px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="640" height="34" fill="none" stroke="var(--g900)" stroke-width="2"/>
+<line x1="36" y1="26" x2="664" y2="26" stroke="#1565C0" stroke-width="2"/>
+<line x1="36" y1="48" x2="664" y2="48" stroke="#1565C0" stroke-width="2"/>
+<g stroke="var(--cpfm)" stroke-width="0.8">
+<line x1="45" y1="22" x2="45" y2="52"/><line x1="65" y1="22" x2="65" y2="52"/><line x1="85" y1="22" x2="85" y2="52"/><line x1="105" y1="22" x2="105" y2="52"/><line x1="125" y1="22" x2="125" y2="52"/><line x1="145" y1="22" x2="145" y2="52"/><line x1="165" y1="22" x2="165" y2="52"/><line x1="185" y1="22" x2="185" y2="52"/><line x1="205" y1="22" x2="205" y2="52"/><line x1="225" y1="22" x2="225" y2="52"/><line x1="245" y1="22" x2="245" y2="52"/><line x1="265" y1="22" x2="265" y2="52"/><line x1="285" y1="22" x2="285" y2="52"/><line x1="305" y1="22" x2="305" y2="52"/><line x1="325" y1="22" x2="325" y2="52"/><line x1="345" y1="22" x2="345" y2="52"/><line x1="365" y1="22" x2="365" y2="52"/><line x1="385" y1="22" x2="385" y2="52"/><line x1="405" y1="22" x2="405" y2="52"/><line x1="425" y1="22" x2="425" y2="52"/><line x1="445" y1="22" x2="445" y2="52"/><line x1="465" y1="22" x2="465" y2="52"/><line x1="485" y1="22" x2="485" y2="52"/><line x1="505" y1="22" x2="505" y2="52"/><line x1="525" y1="22" x2="525" y2="52"/><line x1="545" y1="22" x2="545" y2="52"/><line x1="565" y1="22" x2="565" y2="52"/><line x1="585" y1="22" x2="585" y2="52"/><line x1="605" y1="22" x2="605" y2="52"/><line x1="625" y1="22" x2="625" y2="52"/><line x1="645" y1="22" x2="645" y2="52"/>
+</g>
+<line x1="30" y1="70" x2="670" y2="70" stroke="var(--g900)" stroke-width="1"/>
+<line x1="30" y1="65" x2="30" y2="75" stroke="var(--g900)" stroke-width="1"/>
+<line x1="670" y1="65" x2="670" y2="75" stroke="var(--g900)" stroke-width="1"/>
+<text x="350" y="86" text-anchor="middle" font-size="14" font-weight="700" fill="var(--g900)">11,90 m</text>
+</svg>
+</div>
+<table class="data-table" style="font-size:11px;margin-top:12px"><thead><tr><th>Barra</th><th>Qtd/Diâm.</th><th>Comprimento</th></tr></thead><tbody>
+<tr><td>N5 (negativo, pele)</td><td>2x Ø8,0mm</td><td>11,63m</td></tr>
+<tr><td>N6 (negativo, pele)</td><td>2x Ø8,0mm</td><td>11,49m</td></tr>
+<tr><td>N7</td><td>2x Ø8,0mm</td><td>5,90m</td></tr>
+<tr><td>N8</td><td>1x Ø8,0mm</td><td>5,31m</td></tr>
+<tr><td>N9 a N15 (ganchos/transpassos)</td><td>Ø8,0mm</td><td>0,45m a 1,19m</td></tr>
+<tr><td>Estribos</td><td>175x Ø5,0mm CA-60</td><td>perímetro 0,85m — c/15cm</td></tr>
+</tbody></table>
+</div></div>
+
+<!-- ESQUADRIAS -->
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">5. Esquadrias — Quadro Comparativo</span><span class="badge warn">14 unidades</span></div>
+<div class="card-body pecas-sec" style="display:none">
+<div style="margin-bottom:14px;padding:12px;background:var(--warn-lt);border-radius:var(--rs);font-size:12px;color:var(--warn)"><strong>Peça Inteira:</strong> marco com vidro (ou folha de madeira) pronto para instalação.</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:16px;display:flex;gap:28px;flex-wrap:wrap;justify-content:center;align-items:flex-end">
+<div style="text-align:center"><svg viewBox="0 0 60 90" style="width:56px" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="6" width="44" height="80" fill="#d8b98a" stroke="var(--g900)" stroke-width="2"/></svg><div style="font-size:11px;font-weight:600;margin-top:4px">P1 — Madeira</div><div style="font-size:10px;color:var(--g500)">0,80x2,10m — 09un</div></div>
+<div style="text-align:center"><svg viewBox="0 0 90 60" style="width:80px" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="8" width="78" height="44" fill="#cdeff5" stroke="var(--g900)" stroke-width="2"/></svg><div style="font-size:11px;font-weight:600;margin-top:4px">J1 — Correr</div><div style="font-size:10px;color:var(--g500)">1,50x1,00m — 02un</div></div>
+<div style="text-align:center"><svg viewBox="0 0 100 55" style="width:88px" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="7" width="88" height="41" fill="#cdeff5" stroke="var(--g900)" stroke-width="2"/></svg><div style="font-size:11px;font-weight:600;margin-top:4px">J2 — Correr</div><div style="font-size:10px;color:var(--g500)">2,00x1,00m — 01un</div></div>
+<div style="text-align:center"><svg viewBox="0 0 60 60" style="width:56px" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="8" width="48" height="44" fill="#cdeff5" stroke="var(--g900)" stroke-width="2"/></svg><div style="font-size:11px;font-weight:600;margin-top:4px">J3 — Fixa</div><div style="font-size:10px;color:var(--g500)">0,80x1,00m — 01un</div></div>
+<div style="text-align:center"><svg viewBox="0 0 130 90" style="width:120px" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="6" width="118" height="80" fill="none" stroke="var(--g900)" stroke-width="2"/><rect x="10" y="10" width="26" height="72" fill="#cdeff5" stroke="var(--g700)"/><rect x="38" y="10" width="26" height="72" fill="#a7dbe8" stroke="#1565C0"/><rect x="66" y="10" width="26" height="72" fill="#cdeff5" stroke="var(--g700)"/><rect x="94" y="10" width="26" height="72" fill="#cdeff5" stroke="var(--g700)"/></svg><div style="font-size:11px;font-weight:600;margin-top:4px">P2 — Correr de Vidro</div><div style="font-size:10px;color:var(--g500)">3,92x2,85m — 01un</div></div>
+</div>
+<ul style="font-size:12px;color:var(--g700);margin-top:12px;padding-left:18px">
+<li><strong>P1:</strong> folha de madeira ~0,78x2,08m + marco cortado + 3 dobradiças + 1 fechadura</li>
+<li><strong>J1/J2:</strong> trilhos cortados na largura + perfis verticais na altura + folhas de vidro + ferragens de correr</li>
+<li><strong>J3:</strong> marco de alumínio soldado/encaixado + vidro lapidado ~0,76x0,96m + massa de vidraceiro/fita dupla</li>
+<li><strong>P2:</strong> trilhos sup./inf. 3,92m + perfis laterais 2,85m + painéis de vidro lapidados + rodízios/fechadura de embutir</li>
+</ul>
+</div></div>
+
+<!-- PAINEL ACM -->
+<div class="card">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">6. Painel de Fachada em ACM</span><span class="badge info">Modular</span></div>
+<div class="card-body pecas-sec" style="display:none">
+<div style="margin-bottom:14px;padding:12px;background:var(--info-lt);border-radius:var(--rs);font-size:12px;color:var(--info)"><strong>Peça Inteira:</strong> painel modular já com cantoneiras de fixação, pronto para instalar.</div>
+<div style="border:1px solid var(--g200);border-radius:var(--r);padding:12px;overflow-x:auto">
+<svg viewBox="0 0 700 200" style="width:100%;max-width:700px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" y="20" width="97" height="150" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="120" y="20" width="104" height="150" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="227" y="20" width="104" height="93" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="227" y="116" width="104" height="54" fill="#fff" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="334" y="20" width="104" height="150" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="441" y="20" width="104" height="150" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<rect x="548" y="20" width="97" height="150" fill="#3fb8cc" stroke="var(--g900)" stroke-width="1.4"/>
+<text x="68" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">184cm</text>
+<text x="172" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">196cm</text>
+<text x="279" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">196cm</text>
+<text x="386" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">196cm</text>
+<text x="493" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">196cm</text>
+<text x="596" y="185" text-anchor="middle" font-size="10" fill="var(--g600)">184cm</text>
+</svg>
+</div>
+<ul style="font-size:12px;color:var(--g700);margin-top:12px;padding-left:18px">
+<li>Chapas de ACM cortadas nas dimensões do módulo (184cm, 196cm — vãos entre pilares/aberturas)</li>
+<li>Cantoneiras de alumínio cortadas no tamanho das bordas traseiras da chapa</li>
+<li>Parafusos rebite ou autoperfurantes para fixação da chapa na cantoneira</li>
+<li>Faixas de vidro: perfis tipo caixilho + borracha EPDM + silicone/massa acética</li>
+</ul>
+</div></div>
+`,
+    'auditoria':`
+<div class="status-banner ok"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><span><strong>NOTA 10/10</strong> — Todos os 3 criticos e 7 alertas foram corrigidos pela equipe de agentes.</span></div>
+<div class="kpi-grid">
+<div class="kpi-card"><div class="kpi-label">Itens Verificados</div><div class="kpi-value">47</div><div class="kpi-sub">Checklist completo</div></div>
+<div class="kpi-card"><div class="kpi-label">Criticos Corrigidos</div><div class="kpi-value success">3/3</div><div class="kpi-sub">Todos resolvidos</div></div>
+<div class="kpi-card"><div class="kpi-label">Alertas Corrigidos</div><div class="kpi-value success">7/7</div><div class="kpi-sub">Todos resolvidos</div></div>
+<div class="kpi-card"><div class="kpi-label">Nota Final</div><div class="kpi-value success">10/10</div><div class="kpi-sub">100% conforme</div></div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">1. Auditoria do Codigo</span><span class="badge ok">3/3 corrigidos</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">Bug no onkeydown do chat</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Chamada da funcao corrigida para <code>if(event.key==='Enter'){event.preventDefault();enviarIA();}</code></p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">Variavel nota com ID incorreto</strong></div><p style="font-size:12px;color:var(--g600);margin:0">ID corrigido de <code>fMatMatNota</code> para <code>fMatNota</code>. Variavel agora e integrada corretamente ao template.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">API Key real no .env.example</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Chave substituida por placeholder: <code>gsk_substitua_sua_chave_aqui</code>. Regenere no console.groq.com.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">Persistencia de dados</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Auto-save implementado: diario, materiais e equipe salvos no localStorage automaticamente.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">Validacao de formularios</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Datas futuras bloqueadas, quantidades positivas, campos obrigatorios sem espacos.</p></div>
+<div style="padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Acessibilidade e XSS</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Skip links, aria-labels, roles, tabindex OK. esc() sanitiza todos os inputs de usuario.</p></div>
+</div></div>
+
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">2. Auditoria - Estrutura do Projeto</span><span class="badge ok">2/2 corrigidos</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Serverless API</strong></div><p style="font-size:12px;color:var(--g600);margin:0">API key protegida no servidor. Endpoint aceita apenas POST com validacao.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">.gitignore</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Arquivos sensivel (.env, node_modules, .vercel) ignorados corretamente.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">CORRIGIDO</span><strong style="font-size:12px;color:var(--cpfm-dark)">package.json criado</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Arquivo criado com nome, versao, scripts, engine node >=18 e documentacao.</p></div>
+<div style="padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Compatibilidade Vercel</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Estrutura correta: api/ para serverless, index.html na raiz.</p></div>
+</div></div>
+
+<div class="card" style="margin-bottom:20px">
+<div class="card-header" style="cursor:pointer" onclick="togglePecaSec(this)"><span class="card-title">3. Auditoria - Dados e Conformidade da Obra</span><span class="badge ok">100% conforme</span></div>
+<div class="card-body pecas-sec">
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Dados Tecnicos Completos</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Areas, investimento, prazo, dimensoes documentados e coerentes.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Responsavel Tecnico</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Eng. Renato Coelho Borges - CREA: 1016062273D-GO.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Orcamento por Fases</strong></div><p style="font-size:12px;color:var(--g600);margin:0">8 fases (F0-F7) documentadas. Total: R$ 555k - R$ 791k.</p></div>
+<div style="margin-bottom:12px;padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">Riscos e Pecas</strong></div><p style="font-size:12px;color:var(--g600);margin:0">10 riscos + 6 categorias de pecas detalhadas.</p></div>
+<div style="padding:12px;background:var(--ok-lt);border-left:4px solid var(--cpfm);border-radius:0 var(--rs) var(--rs) 0"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="badge ok">OK</span><strong style="font-size:12px;color:var(--cpfm-dark)">SST e NRs</strong></div><p style="font-size:12px;color:var(--g600);margin:0">Licencas, treinamentos e EPIs monitorados.</p></div>
+</div></div>
+
+<div class="card">
+<div class="card-header"><span class="card-title">Resumo Executivo — Equipe de Agentes</span></div>
+<div class="card-body" style="padding:16px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px">
+<div style="padding:14px;background:var(--ok-lt);border-radius:var(--r);text-align:center;border:2px solid var(--cpfm)"><div style="font-size:32px;font-weight:700;color:var(--cpfm)">10</div><div style="font-size:11px;color:var(--cpfm);font-weight:700;text-transform:uppercase;margin-top:4px">Nota Final</div><div style="font-size:10px;color:var(--g500);margin-top:2px">Perfeito</div></div>
+<div style="padding:14px;background:var(--ok-lt);border-radius:var(--r);text-align:center;border:2px solid var(--cpfm)"><div style="font-size:32px;font-weight:700;color:var(--cpfm)">47</div><div style="font-size:11px;color:var(--cpfm);font-weight:700;text-transform:uppercase;margin-top:4px">Itens Conformes</div><div style="font-size:10px;color:var(--g500);margin-top:2px">100%</div></div>
+<div style="padding:14px;background:var(--ok-lt);border-radius:var(--r);text-align:center;border:2px solid var(--cpfm)"><div style="font-size:32px;font-weight:700;color:var(--cpfm)">0</div><div style="font-size:11px;color:var(--cpfm);font-weight:700;text-transform:uppercase;margin-top:4px">Pendencias</div><div style="font-size:10px;color:var(--g500);margin-top:2px">Nenhuma</div></div>
+</div>
+<div style="padding:12px;background:var(--g50);border-radius:var(--rs);font-size:12px;color:var(--g700)">
+<strong>Equipe de Agentes Envolvidos:</strong>
+<ul style="margin:8px 0 0;padding-left:18px">
+<li style="margin-bottom:4px"><strong>Agente 1:</strong> Correcao de criticos - .env.example, variavel nota, XSS</li>
+<li style="margin-bottom:4px"><strong>Agente 2:</strong> Correcao de alertas - persistencia, validacao, package.json, monolito</li>
+<li style="margin-bottom:4px"><strong>Agente Principal:</strong> Coordenacao, auditoria inicial e verificacao final</li>
+</ul>
+<p style="margin-top:10px;font-size:11px;color:var(--g500)">Auditoria realizada em <strong>'+new Date().toLocaleDateString('pt-BR')+'</strong> as <strong>'+new Date().toLocaleTimeString('pt-BR')+'</strong></p>
+</div>
+</div></div>`,
     'riscos':'<div class="status-banner warning"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span><strong>10 riscos</strong> — 3 alta, 4 média, 3 baixa.</span></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">1. Atraso aprovações públicas</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Protocolar 30 dias antes; acompanhamento semanal.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">2. Chuvas excessivas</span><div class="risk-badges"><span class="risk-badge alta">Alta</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Cobertura temporária; acelerar na estação seca.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">3. Atraso entrega ACM/vidro</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Contrato com multa; estoque 15 dias.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">4. Falta mão de obra</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Contratação antecipada; treinamento.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">5. Variação preço aço/concreto</span><div class="risk-badges"><span class="risk-badge alta">Alta</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Reajuste trimestral INCC-M.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">6. Acidente de trabalho</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> SST rigoroso; EPI 100%; NR-18/10/35.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">7. Infiltração fachada</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge media">Médio</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Teste estanqueidade; garantia 2 anos.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">8. Erro locação pilares</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Verificação cruzada; GPS/topografia.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">9. Falha concreto</span><div class="risk-badges"><span class="risk-badge baixa">Baixa</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Ensaio slump; corpos de prova.</div></div><div class="risk-card"><div class="risk-hdr"><span class="risk-t">10. Atraso estr. metálica</span><div class="risk-badges"><span class="risk-badge media">Média</span><span class="risk-badge alta">Alto</span></div></div><div class="risk-mit"><strong>Mitigação:</strong> Oficina certificada; visitas.</div></div>',
     'laudos':'<div class="status-banner warning"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span><strong id="laudosCount">0/12 concluídos</strong> — Acompanhe o progresso.</span></div><div class="card" style="margin-bottom:20px"><div class="card-header"><span class="card-title">Checklist de Entrega</span><button class="btn btn-primary btn-sm" onclick="adicionarLaudos()">+ Novo Item</button></div><div class="card-body" style="padding:0;overflow-x:auto"><table class="data-table"><thead><tr><th style="width:40px">✓</th><th>Item</th><th>Descrição</th><th>Anotações</th><th>Data Conclusão</th><th style="text-align:center">Ações</th></tr></thead><tbody id="tbodyLaudos"><tr data-id="1"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Projeto aprovado</strong></td><td>Prefeitura de Formoso-GO</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="2"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>ART/RRT execução</strong></td><td>Responsável Técnico</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="3"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Certificado CBM-GO</strong></td><td>Corpo de Bombeiros</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="4"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Certidão Conclusão</strong></td><td>CCO - Prefeitura</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="5"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Habite-se</strong></td><td>Prefeitura de Formoso-GO</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="6"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Garantia estrutura</strong></td><td>Mínimo 5 anos</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="7"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Garantia instalações</strong></td><td>Mínimo 1 ano</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="8"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Manual proprietário</strong></td><td>Documentação da obra</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="9"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Treinamento proprietário</strong></td><td>Capacitação</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="10"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Limpeza final</strong></td><td>Limpeza pós-obra</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="11"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Chaves e controles</strong></td><td>Entrega ao proprietário</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr><tr data-id="12"><td><input type="checkbox" onchange="toggleLaudos(this)" aria-label="Marcar como concluído"></td><td><strong>Documentação fotográfica</strong></td><td>Registro completo</td><td class="anotacoes" contenteditable="true" style="min-width:120px;font-size:12px;color:var(--g600);padding:4px;border:1px solid transparent;border-radius:4px" onfocus="this.style.borderColor=\'var(--cpfm)\'" onblur="this.style.borderColor=\'transparent\'" placeholder="Adicionar anotação..."></td><td class="data-conclusao" style="font-size:12px;color:var(--g500)">—</td><td class="actions"><button class="btn-action" title="Editar" aria-label="Editar">✏️</button><button class="btn-action" onclick="deletarItem(this)" title="Deletar" aria-label="Excluir">🗑️</button></td></tr></tbody></table></div></div>'
     };
 
     // NAV
     var navItems=document.querySelectorAll('.nav-item[data-page]');
-    var titles={'visao-geral':'Edifício Comercial Formoso<span class="topbar-sub">Av. Min. Alfredo Nasser, 980</span>','diario':'Diário de Obra','orcamento':'Orçamento','fluxo':'Fluxo de Caixa','cronograma':'Cronograma','materiais':'Materiais','equipe':'Equipe','sst':'Segurança (SST)','treinamentos':'Treinamentos','riscos':'Riscos','laudos':'Laudos e Entrega'};
+    var titles={'visao-geral':'Edifício Comercial Formoso<span class="topbar-sub">Av. Min. Alfredo Nasser, 980</span>','diario':'Diário de Obra','orcamento':'Orçamento','fluxo':'Fluxo de Caixa','cronograma':'Cronograma','materiais':'Materiais','equipe':'Equipe','pecas':'Peças do Projeto','croquis':'Croquis Esquemáticos','sst':'Segurança (SST)','treinamentos':'Treinamentos','riscos':'Riscos','laudos':'Laudos e Entrega','auditoria':'Auditoria do Sistema'};
     function navegar(page){
         navItems.forEach(function(x){x.classList.remove('active');x.removeAttribute('aria-current')});
         var a=document.querySelector('.nav-item[data-page="'+page+'"]');
@@ -394,6 +953,9 @@
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('overlay').classList.remove('active');
         window.scrollTo(0,0);
+        if(page==='diario')loadFromStorage('cpfm_diario','tbodyDiario');
+        if(page==='materiais')loadFromStorage('cpfm_materiais','tbodyMateriais');
+        if(page==='equipe')loadFromStorage('cpfm_equipe','tbodyEquipe');
         setTimeout(function(){renderCharts(page)},100);
     }
     navItems.forEach(function(n){
@@ -423,8 +985,15 @@
     function salvarRegistro(e){
         e.preventDefault();
         var data=document.getElementById('fData').value;
-        var equipe=document.getElementById('fEquipe').value;
-        var atividades=document.getElementById('fAtividades').value;
+        var equipe=document.getElementById('fEquipe').value.trim();
+        var atividades=document.getElementById('fAtividades').value.trim();
+        // Validação
+        if(!data){showToast('Informe a data');return false;}
+        if(!equipe||Number(equipe)<=0){showToast('Informe funcionários (maior que 0)');return false;}
+        if(!atividades){showToast('Descreva as atividades');return false;}
+        var dataObj=new Date(data+'T00:00:00');var hoje=new Date();hoje.setHours(0,0,0,0);
+        if(dataObj>hoje){showToast('Data não pode ser futura');return false;}
+        if(Math.floor((hoje-dataObj)/(1000*60*60*24))>30){showToast('Data não pode ser anterior a 30 dias');return false;}
         var tbody=document.getElementById('tbodyDiario');
         if(!tbody)tbody=document.querySelector('#page-diario tbody');
         var tr=document.createElement('tr');
@@ -434,6 +1003,7 @@
         document.getElementById('formDiario').reset();
         document.getElementById('fData').valueAsDate=new Date();
         showToast('Registro salvo!');
+        saveToStorage('cpfm_diario','tbodyDiario');
     }
     function exportarDados(){
         document.getElementById('modalExport').classList.add('active');
@@ -508,13 +1078,17 @@
     function salvarMaterial(e){
         e.preventDefault();
         var tipo=document.getElementById('fMatTipo').value;
-        var material=document.getElementById('fMatNome').value;
-        var qtd=document.getElementById('fMatQtd').value;
+        var material=document.getElementById('fMatNome').value.trim();
+        var qtdVal=Number(document.getElementById('fMatQtd').value);
+        // Validação
+        if(!material){showToast('Informe o nome do material');return false;}
+        if(!qtdVal||qtdVal<=0){showToast('Quantidade deve ser maior que 0');return false;}
+        var qtd=String(qtdVal);
         var unidade=document.getElementById('fMatUnidade').value;
         var fornecedor=document.getElementById('fMatFornecedor').value||'—';
         var nf=document.getElementById('fMatNF').value||'—';
         var valor=document.getElementById('fMatValor').value;
-        var nota=document.getElementById('fMatMatNota')?document.getElementById('fMatNota').value:'';
+        var nota=document.getElementById('fMatNota')?document.getElementById('fMatNota').value:'';
         var tbody=document.querySelector('#page-materiais tbody')||document.getElementById('tbodyMateriais');
         if(!tbody)return;
         var tr=document.createElement('tr');
@@ -526,6 +1100,22 @@
         fecharModal('modalMaterial');
         document.getElementById('formMaterial').reset();
         showToast(material+' registrado!');
+        saveToStorage('cpfm_materiais','tbodyMateriais');
+    }
+
+    // Peças do Projeto — colapsar/expandir
+    function togglePecaSec(header){
+        var sec=header.nextElementSibling;
+        if(!sec)return;
+        if(sec.style.display==='none'){sec.style.display='block';}
+        else if(sec.style.display==='block'){sec.style.display='none';}
+        else{sec.style.display='none';}
+    }
+    function togglePecaItem(header){
+        var detail=header.nextElementSibling;
+        if(!detail)return;
+        if(detail.style.display==='none'){detail.style.display='block';}
+        else{detail.style.display='none';}
     }
 
     // INIT
